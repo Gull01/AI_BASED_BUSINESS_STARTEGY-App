@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Use /api for Vercel deployment, fallback to localhost for development
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '/api');
 
 export const getRecommendations = async (query) => {
   const response = await axios.post(`${API_URL}/recommend`, {
