@@ -21,12 +21,15 @@ class handler(BaseHTTPRequestHandler):
         try:
             request_data = json.loads(post_data.decode('utf-8'))
             
-            if self.path == '/recommend':
+            # Handle both /recommend and /api/recommend
+            path = self.path.replace('/api', '')
+            
+            if '/recommend' in path:
                 result = self.handle_recommend(request_data)
-            elif self.path == '/map-insight':
+            elif '/map-insight' in path:
                 result = self.handle_map_insight(request_data)
             else:
-                result = {"error": "Not found"}
+                result = {"error": f"Path not found: {self.path}"}
             
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
