@@ -3,8 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import os
-import google.generativeai as genai
 import json
+
+try:
+    import google.generativeai as genai
+    GENAI_AVAILABLE = True
+except Exception as e:
+    GENAI_AVAILABLE = False
+    GENAI_ERROR = str(e)
 
 # Configure API key (Vercel provides env vars directly)
 
@@ -146,7 +152,14 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "Geo Market Match API is running"}
+    status = {
+        "message": "Geo Market Match API is running",
+        "genai_available": GENAI_AVAILABLE,
+        "api_key_set": bool(os.getenv("GOOGLE_API_KEY"))
+    }
+    if not GENAI_AVAILABLE:
+        status["genai_error"] = GENAI_ERROR
+    return status
 
 @app.post("/recommend", response_model=RecommendationResponse)
 def get_recommendations(request: RecommendationRequest):
