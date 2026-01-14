@@ -5,6 +5,30 @@
 .env.development
 *.env
 
+# Deployment scripts with sensitive data
+backend/apply_new_key.py
+backend/deploy_*.py
+backend/fix_wsgi.py
+backend/setup_pythonanywhere.py
+backend/force_reload.py
+backend/update_api_key.py
+backend/check_logs.py
+backend/view_wsgi.py
+backend/install_flask.py
+backend/*_test*.py
+backend/quick_test.py
+backend/detailed_test.py
+backend/verify_api_key.py
+
+# Deployment documentation (may contain keys)
+*DEPLOY*.md
+PYTHONANYWHERE_DEPLOY.md
+GLITCH_DEPLOY.md
+RENDER_DEPLOY.md
+FREE_DEPLOY_OPTIONS.md
+backend/GLITCH_README.md
+backend/.ebextensions/
+
 # Python
 __pycache__/
 *.py[cod]
