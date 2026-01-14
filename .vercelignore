@@ -1,0 +1,12 @@
+.env
+.env.local
+.env.*
+node_modules
+__pycache__
+*.pyc
+.git
+.vscode
+*.log
+backend/.env
+frontend/.env
+GeoMarket-Research-App
