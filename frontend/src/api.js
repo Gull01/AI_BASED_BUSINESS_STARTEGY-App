@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use /api for Vercel deployment
-const API_URL = '/api';
+// PythonAnywhere backend URL
+const API_URL = 'https://gull001.pythonanywhere.com';
 
 export const getRecommendations = async (query) => {
   const response = await axios.post(`${API_URL}/recommend`, {
