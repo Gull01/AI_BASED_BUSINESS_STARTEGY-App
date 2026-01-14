@@ -1,4 +1,1 @@
-fastapi
-pydantic
-mangum
-requests
+# No external dependencies needed - using only Python stdlib

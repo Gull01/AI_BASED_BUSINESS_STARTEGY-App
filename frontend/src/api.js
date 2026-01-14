@@ -1,15 +1,11 @@
 import axios from 'axios';
 
-// Use the public backend URL
-const API_URL = 'https://gis-business-api.loca.lt';
+// Use /api for Vercel deployment
+const API_URL = '/api';
 
 export const getRecommendations = async (query) => {
   const response = await axios.post(`${API_URL}/recommend`, {
     query: query,
-  }, {
-    headers: {
-      'Bypass-Tunnel-Reminder': 'true'
-    }
   });
   return response.data;
 };
@@ -19,10 +15,6 @@ export const getMapInsight = async (latitude, longitude, businessType) => {
     latitude: latitude,
     longitude: longitude,
     business_type: businessType,
-  }, {
-    headers: {
-      'Bypass-Tunnel-Reminder': 'true'
-    }
   });
   return response.data;
 };
