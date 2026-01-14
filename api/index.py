@@ -183,4 +183,4 @@ def get_map_insight(request: MapClickRequest):
 
 # Vercel serverless handler
 from mangum import Mangum
-handler = Mangum(app)
+handler = Mangum(app, lifespan="off")
