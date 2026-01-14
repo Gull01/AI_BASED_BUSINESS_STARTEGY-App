@@ -23,51 +23,65 @@ def get_location_insights(latitude: float, longitude: float, business_type: str)
         )
 
     prompt = f"""
-    You are a hyper-local market research expert specializing in neighborhood-level business analysis with street-by-street knowledge of markets worldwide.
+    You are a hyper-local market research expert with street-level knowledge of every major city worldwide.
     
-    EXACT COORDINATES: Latitude {latitude}, Longitude {longitude}
-    Business Type: "{business_type}"
+    EXACT COORDINATES: {latitude}, {longitude}
+    Business Type: {business_type}
     
-    CRITICAL INSTRUCTIONS:
-    1. Use the EXACT coordinates to identify the PRECISE local area (specific neighborhood, district, or street)
-    2. DO NOT provide generic city-wide analysis - focus on THIS SPECIFIC LOCATION within a 500m radius
-    3. Identify the micro-neighborhood, local district, or area name (e.g., "F-7 Markaz", "Blue Area", "Bahria Town Phase 4")
-    4. Analyze what makes THIS EXACT SPOT unique within the broader city
+    STEP 1: IDENTIFY THE EXACT LOCATION
+    - Use the GPS coordinates to determine: Country, City, District/Neighborhood, Street/Block
+    - Be SPECIFIC: Don't say "Islamabad" - say "F-7 Markaz, Islamabad" or "Blue Area, Islamabad"
+    - Don't say "Dubai" - say "Dubai Marina, Dubai" or "Downtown Dubai, Dubai"
     
-    HYPER-LOCAL ANALYSIS REQUIRED:
-    - Specific street/block characteristics (residential vs commercial density)
-    - Immediate surrounding businesses within 200-500m radius
-    - Foot traffic patterns for THIS EXACT BLOCK (morning, afternoon, evening, weekend)
-    - Nearby landmarks, metro stations, shopping centers, offices within walking distance
-    - Local demographics of people who LIVE OR WORK in this immediate area
-    - Parking availability and public transport access at THIS SPOT
-    - Commercial rent prices for THIS SPECIFIC NEIGHBORHOOD ($/sqft/month)
-    - Direct competitors at THIS LOCATION (count and names if known)
-    - Visibility and accessibility from main roads
-    - Local customer spending habits in THIS AREA
-    - Safety, cleanliness, and ambiance of THIS IMMEDIATE VICINITY
-    - Nearby residential complexes, offices, or institutions that drive foot traffic HERE
+    STEP 2: ANALYZE WITHIN 300-500 METER RADIUS
+    Research and provide REAL information about:
+    - Exact neighborhood name and what it's known for
+    - Type of area: residential, commercial, mixed-use, office district, tourist zone
+    - Nearby landmarks within 500m: malls, metro stations, parks, mosques, schools
+    - Existing businesses within 300m (count competitors, complementary businesses)
+    - Foot traffic patterns: peak hours, weekday vs weekend, seasonal variations
+    - Demographics: who lives/works/visits THIS specific area (age, income, occupation)
+    - Parking: street parking, paid lots, accessibility
+    - Public transport: nearest stations, bus stops (with distances)
+    - Commercial rent range for THIS neighborhood ($/sqft/month)
+    - Visibility: main road, side street, corner location advantages
     
-    EXAMPLES OF HYPER-LOCAL INSIGHTS:
-    - "This location in F-7 Markaz is in the heart of the commercial zone, 200m from the main intersection"
-    - "Blue Area business district - this spot is near commercial towers with 5,000+ office workers within 300m"
-    - "Bahria Town Phase 4 - residential area with family-oriented demographics, evening foot traffic from nearby parks"
+    STEP 3: BUSINESS VIABILITY FOR THIS SPOT
+    - Why THIS EXACT location works or doesn't work for {business_type}
+    - Direct competitors within 500m (estimate count and impact)
+    - Target customers who PASS BY THIS SPOT daily
+    - Revenue potential based on THIS location's foot traffic
+    - Startup costs specific to THIS area's rent and setup requirements
     
-    Return ONLY valid JSON. No markdown, no code blocks.
+    SCORING GUIDELINES:
+    - 0.85-0.95: Prime location, high foot traffic, low competition, excellent visibility
+    - 0.70-0.84: Good location, moderate traffic, some competition, decent accessibility  
+    - 0.50-0.69: Average location, needs marketing, higher competition or accessibility issues
+    - Below 0.50: Poor location, very high competition or low traffic
     
-    JSON Format:
+    Return ONLY valid JSON (no markdown, no code blocks):
+    
     {{
-        "location_name": "Exact Micro-Location (Specific Neighborhood/District, City) - e.g., 'F-7 Markaz, Islamabad' or 'Blue Area Business District, Islamabad'",
-        "insights": "5-6 sentences with HYPER-LOCAL, SPECIFIC insights about THIS EXACT SPOT. Mention surrounding streets, nearby landmarks, what's within 200-500m, local foot traffic at THIS location, why THIS EXACT SPOT works or doesn't work. Be as specific as possible about THIS PRECISE LOCATION.",
-        "opportunities": ["Hyper-local opportunity 1 with specific distance/data (e.g., '300m from metro station with 10k daily commuters')", "Opportunity 2 specific to THIS block", "Opportunity 3 with local context", "Opportunity 4 with nearby landmark reference"],
-        "challenges": ["Hyper-local challenge 1 for THIS spot (e.g., 'Limited parking on this street during business hours')", "Challenge 2 specific to immediate area", "Challenge 3 with local context"],
-        "recommendation_score": float_0_to_1,
-        "estimated_monthly_revenue": "$X,000-$Y,000 based on THIS LOCATION'S foot traffic and local spending power",
-        "estimated_startup_cost": "$X,000-$Y,000 including rent for THIS SPECIFIC AREA",
-        "target_customers": "Very specific profile: age, income, profession, lifestyle of people who FREQUENT THIS EXACT LOCATION (not the entire city)"
+        "location_name": "Specific Neighborhood/District, City (e.g., 'F-7 Markaz, Islamabad' or 'Dubai Marina, Dubai')",
+        "insights": "5-6 sentences describing THIS EXACT SPOT: (1) What's at this exact location now, (2) Surrounding businesses within 300m, (3) Who walks by here daily, (4) Peak traffic times, (5) Why it works/doesn't work for {business_type}, (6) Unique advantages or challenges of THIS SPOT.",
+        "opportunities": [
+            "Specific opportunity with data: 'Adjacent to XYZ Mall with 15,000 daily visitors'",
+            "Measurable advantage: 'Within 200m of Metro Station serving 8,000 commuters/day'",
+            "Target market insight: '5,000+ office workers within 300m radius'",
+            "Growth factor: 'New residential complex opening 2026 will add 2,000 families'"
+        ],
+        "challenges": [
+            "Specific challenge: 'High rent at $45-55/sqft due to prime location'",
+            "Competition data: '12 similar businesses within 500m radius'",
+            "Accessibility issue: 'Limited parking, mostly street parking after 6pm'"
+        ],
+        "recommendation_score": 0.50_to_0.95,
+        "estimated_monthly_revenue": "$X,000-$Y,000 (based on foot traffic of N customers/day at $Z average spend)",
+        "estimated_startup_cost": "$X,000-$Y,000 (rent for THIS area: $X/sqft × N sqft, plus equipment/inventory/permits)",
+        "target_customers": "Specific profile: Age range (e.g., 25-40), Income level ($40-70k), Occupation (office workers, residents, tourists), Why they're in THIS area (work nearby, live in adjacent apartments, visit mall/landmark)"
     }}
     
-    CRITICAL: Analyze the EXACT COORDINATES at neighborhood/street level, NOT the entire city. Be hyper-specific about THIS LOCATION.
+    CRITICAL: Analyze THIS EXACT GPS LOCATION, not the entire city. Be hyper-specific about THIS spot.
     """
     
     model = genai.GenerativeModel('gemini-2.5-flash')
@@ -81,16 +95,13 @@ def get_location_insights(latitude: float, longitude: float, business_type: str)
         
         data = json.loads(text_response)
         return LocationInsight(**data)
+    except json.JSONDecodeError as e:
+        print(f"Location insight JSON error: {e}")
+        print(f"Response: {text_response[:500] if 'text_response' in locals() else 'No response'}")
+        raise Exception(f"Failed to analyze location at ({latitude}, {longitude})")
     except Exception as e:
         print(f"Location insight error: {e}")
-        print("Check your API key and ensure the coordinates are valid.")
-        return LocationInsight(
-            location_name="Selected Location",
-            insights=f"Unable to analyze this specific location for {business_type}.",
-            opportunities=["Market research recommended"],
-            challenges=["Limited data available"],
-            recommendation_score=0.5
-        )
+        raise Exception(f"Unable to analyze location: {str(e)}")
 
 def get_fallback_data(country=None):
     from schemas import AreaInsight
@@ -163,64 +174,74 @@ def get_recommendations_from_ai(user_query: str):
         return get_fallback_data()
 
     prompt = f"""
-    You are an expert business consultant and market analyst with deep knowledge of global markets, local economies, and business opportunities.
+    You are an expert business consultant and market analyst with deep knowledge of global markets, local economies, and business opportunities worldwide.
     
     User Query: "{user_query}"
     
-    CRITICAL INSTRUCTIONS:
-    1. Carefully analyze what SPECIFIC location the user is asking about (city, country, region)
-    2. Identify what type of business or industry they're interested in
-    3. If they mention a specific city like "Islamabad", "Dubai", "Toronto", etc., focus ONLY on that location
-    4. Provide REAL, SPECIFIC, and ACTIONABLE insights about that exact location
-    5. MANDATORY: For EVERY city you recommend, you MUST provide at least 4-6 specific neighborhoods/areas with detailed characteristics
+    TASK ANALYSIS:
+    1. Extract the EXACT location mentioned (if any): city, country, or region
+    2. Identify the business type/industry being asked about
+    3. Determine if user wants multiple city options OR analysis of ONE specific location
     
-    For the location(s) you recommend, research and provide:
-    - Current economic conditions and market trends
-    - Demographics and target customer profiles (age, income, lifestyle)
-    - Competition landscape and market saturation
-    - Local regulations and business environment
-    - Infrastructure and accessibility (roads, public transport, parking)
-    - Cultural factors affecting the business
-    - Real estate costs and operational expenses (rent per sq ft, utilities)
-    - MANDATORY: 4-6 specific, well-known neighborhoods/areas within EACH city
+    RESPONSE RULES:
+    - If user mentions a SPECIFIC CITY (e.g., "Dubai", "Islamabad", "Toronto"): Return ONLY that city with 5-7 neighborhoods
+    - If user asks for "best cities" or multiple options: Return 5-8 diverse cities worldwide with 4-5 neighborhoods each
+    - If location is vague (e.g., "in Asia"): Return 5-8 cities from that region
+    - NEVER default to London unless the user asks about UK/Europe
     
-    NEIGHBORHOOD REQUIREMENTS:
-    - Each city MUST have 4-6 neighborhoods in the "areas" array
-    - Use REAL, well-known neighborhood names (e.g., for Islamabad: F-6, F-7, Blue Area, Saddar, Bahria Town, DHA)
-    - Each neighborhood must have precise latitude/longitude coordinates
-    - Provide detailed characteristics: foot traffic, demographics, rent costs, competition, target customers
-    - Score each neighborhood based on business viability (0.0-1.0)
+    NEIGHBORHOOD REQUIREMENTS (CRITICAL):
+    Each city MUST include 5-7 REAL, well-known neighborhoods with:
+    - Actual neighborhood names used by locals (research carefully)
+    - Precise GPS coordinates (latitude, longitude)
+    - Specific characteristics: demographics, foot traffic, rent costs, competition level
+    - Business viability score (0.65-0.95 range for realistic scoring)
     
-    Return 3-8 cities that EXACTLY match the user's requirements.
-    If user asks about ONE specific city, return ONLY that city with comprehensive neighborhood analysis.
+    REAL NEIGHBORHOOD EXAMPLES:
+    - Islamabad: F-6 Markaz, F-7 Markaz, F-8 Markaz, Blue Area, Saddar, Bahria Town Phase 4, DHA Phase 1
+    - Dubai: Dubai Marina, Downtown Dubai, JBR, Business Bay, Jumeirah, DIFC, City Walk
+    - Toronto: Yorkville, Distillery District, King West, Queen West, Bloor-Yonge, Financial District
+    - New York: SoHo, Williamsburg, Upper East Side, Midtown, East Village
+    - Singapore: Orchard Road, Marina Bay, Clarke Quay, Bugis, Chinatown
     
-    IMPORTANT: Return ONLY valid JSON. No markdown, no code blocks, no explanations.
+    MARKET ANALYSIS REQUIREMENTS:
+    - Real estate costs in local currency and USD equivalent
+    - Estimated daily foot traffic numbers
+    - Competition density (number of similar businesses in area)
+    - Target customer demographics (age, income bracket, occupation)
+    - Best performing hours/days
+    - Seasonal trends
+    - Required licenses and permits
     
-    JSON Format:
+    OUTPUT FORMAT:
+    Return ONLY valid JSON array (no markdown, no code blocks, no extra text).
+    
     [
       {{
         "city": "Exact City Name",
-        "country": "Country Name",
-        "latitude": precise_latitude_float,
-        "longitude": precise_longitude_float,
-        "score": float_0_to_1,
-        "reason": "3-4 sentences with SPECIFIC market data, demographics, and concrete opportunities for this exact business type in this exact city. Mention key districts and market conditions.",
+        "country": "Full Country Name",
+        "latitude": precise_float,
+        "longitude": precise_float,
+        "score": 0.70_to_0.95,
+        "reason": "4-5 sentences with: (1) Why this city fits the business type, (2) Current market conditions with data, (3) Target customer demographics, (4) Growth potential, (5) Competitive advantages. Include specific numbers (population, income levels, market size).",
         "areas": [
           {{
-            "area_name": "Specific Neighborhood Name (e.g., F-7 Markaz, Blue Area, Bahria Town)",
-            "latitude": precise_neighborhood_latitude,
-            "longitude": precise_neighborhood_longitude,
-            "score": float_0_to_1,
-            "characteristics": "Detailed 2-3 sentence description: exact demographics (age, income level), daily foot traffic estimate, existing competition count, average commercial rent ($/sqft), primary target customers, accessibility (parking/public transport), why this specific area is ideal or challenging for this business type"
-          }},
-          {{"MUST have 4-6 neighborhoods per city"}}
+            "area_name": "Real Neighborhood Name",
+            "latitude": precise_float,
+            "longitude": precise_float,
+            "score": 0.65_to_0.95,
+            "characteristics": "MUST include: (1) Primary demographics (age 25-45, income $50-80k), (2) Foot traffic estimate (5,000-8,000 daily), (3) Rent cost ($30-50/sqft/month), (4) Competition count (15-20 similar businesses), (5) Best features (near metro, high visibility), (6) Target customers (young professionals, families). 3-4 sentences minimum."
+          }}
         ]
       }}
     ]
     
-    CRITICAL: If user asks about "Islamabad" specifically, you MUST return Islamabad with areas like: F-6, F-7, F-8, Blue Area, Saddar, Bahria Town, DHA, etc.
-    If user asks about "Dubai", include: Dubai Marina, Downtown Dubai, Jumeirah, Business Bay, etc.
-    If user asks about "Toronto", include: Downtown, Yorkville, Distillery District, King West, etc.
+    QUALITY CHECKS:
+    - Each city has 5-7 neighborhoods minimum
+    - Scores are realistic (not all 0.95, vary between 0.65-0.95)
+    - Reasons contain specific data and numbers
+    - Characteristics mention concrete details
+    - If user asked about specific city, ONLY return that city
+    - Coordinates are accurate for each location
     """
 
     model = genai.GenerativeModel('gemini-2.5-flash')
@@ -240,10 +261,25 @@ def get_recommendations_from_ai(user_query: str):
             if 'areas' not in item or item['areas'] is None:
                 item['areas'] = []
             recommendations.append(CityRecommendation(**item))
+        
+        # If we got recommendations, return them
+        if recommendations:
+            return recommendations
+        else:
+            raise ValueError("No recommendations generated")
             
-        return recommendations
+    except json.JSONDecodeError as e:
+        print(f"JSON Parse Error: {e}")
+        print(f"Response was: {text_response[:500] if 'text_response' in locals() else 'No response'}")
+        # Try one more time with a simpler prompt
+        try:
+            simple_prompt = f"Provide 5 best cities worldwide for: {user_query}. Return only JSON array with city, country, latitude, longitude, score (0-1), reason (2 sentences), and areas array with 5 neighborhoods each. No markdown."
+            response = model.generate_content(simple_prompt)
+            text_response = response.text.replace("```json", "").replace("```", "").strip()
+            data = json.loads(text_response)
+            return [CityRecommendation(**item) for item in data]
+        except:
+            raise Exception("AI failed to generate proper response")
     except Exception as e:
         print(f"AI Error: {e}")
-        print(f"Response was: {text_response if 'text_response' in locals() else 'No response'}")
-        print("Returning sample data instead. Check your API key and internet connection.")
-        return get_fallback_data()
+        raise Exception(f"Failed to get AI recommendations: {str(e)}")
