@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import os
-from google import genai
+import google.generativeai as genai
+import json
 
 # Configure API key (Vercel provides env vars directly)
 
@@ -44,8 +45,9 @@ def get_recommendations_from_ai(query: str) -> List[dict]:
     if not api_key:
         raise Exception("GOOGLE_API_KEY environment variable not set")
     
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash-exp"
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-pro")
+    
     prompt = f"""You are a business location consultant. Analyze this query: "{query}"
     
     Provide 3-8 cities worldwide that are best for this business opportunity.
@@ -80,8 +82,7 @@ def get_recommendations_from_ai(query: str) -> List[dict]:
         ]
     }}]"""
     
-    response = client.models.generate_content(model=model_id, contents=prompt)
-    import json
+    response = model.generate_content(prompt)
     json_str = response.text.strip()
     if json_str.startswith('```json'):
         json_str = json_str[7:]
@@ -97,8 +98,9 @@ def get_location_insights(lat: float, lng: float, business_type: str) -> dict:
     if not api_key:
         raise Exception("GOOGLE_API_KEY environment variable not set")
     
-    client = genai.Client(api_key=api_key)
-    model_id = "gemini-2.0-flash-exp"
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-pro")
+    
     prompt = f"""Analyze location at {lat}, {lng} for {business_type}.
     
     Provide hyper-local insights within 200-500m radius:
@@ -122,8 +124,7 @@ def get_location_insights(lat: float, lng: float, business_type: str) -> dict:
         "target_customers": "Demographics"
     }}"""
     
-    response = client.models.generate_content(model=model_id, contents=prompt)
-    import json
+    response = model.generate_content(prompt)
     json_str = response.text.strip()
     if json_str.startswith('```json'):
         json_str = json_str[7:]
