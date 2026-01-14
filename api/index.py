@@ -147,11 +147,7 @@ app.add_middleware(
 def read_root():
     return {"message": "Geo Market Match API is running"}
 
-@app.get("/api")
-def api_root():
-    return {"message": "Geo Market Match API is running"}
-
-@app.post("/api/recommend", response_model=RecommendationResponse)
+@app.post("/recommend", response_model=RecommendationResponse)
 def get_recommendations(request: RecommendationRequest):
     try:
         results = get_recommendations_from_ai(request.query)
@@ -159,7 +155,7 @@ def get_recommendations(request: RecommendationRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/map-insight")
+@app.post("/map-insight")
 def get_map_insight(request: MapClickRequest):
     try:
         insight = get_location_insights(
