@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set API key from environment
-os.environ['GOOGLE_API_KEY'] = os.getenv('GOOGLE_API_KEY', 'AIzaSyC_y-iqtBamMmsv07dGKefauyZ5FGyVQr0')
+# API key is set in PythonAnywhere WSGI file
 
 @app.route('/')
 def read_root():
