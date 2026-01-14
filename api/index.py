@@ -4,15 +4,8 @@ from pydantic import BaseModel
 from typing import List, Optional
 import os
 import json
-
-try:
-    import google.generativeai as genai
-    GENAI_AVAILABLE = True
-except Exception as e:
-    GENAI_AVAILABLE = False
-    GENAI_ERROR = str(e)
-
-# Configure API key (Vercel provides env vars directly)
+import requests
+from mangum import Mangum
 
 # Pydantic models
 class RecommendationRequest(BaseModel):
@@ -44,52 +37,45 @@ class MapClickRequest(BaseModel):
     longitude: float
     business_type: str = "general business"
 
-# AI functions
-def get_recommendations_from_ai(query: str) -> List[dict]:
-    # Configure API key inside function for serverless
+# AI functions using REST API
+def call_gemini_api(prompt: str) -> str:
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise Exception("GOOGLE_API_KEY environment variable not set")
+        raise Exception("GOOGLE_API_KEY not set")
     
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-pro")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+    data = {"contents": [{"parts": [{"text": prompt}]}]}
     
-    prompt = f"""You are a business location consultant. Analyze this query: "{query}"
+    response = requests.post(url, json=data, timeout=30)
+    response.raise_for_status()
+    return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+
+def get_recommendations_from_ai(query: str) -> List[dict]:
+    prompt = f"""Analyze: "{query}"
+
+Provide 3-5 cities for this business. For each city, include 3-4 neighborhoods.
+
+Return ONLY valid JSON:
+[{{
+    "city": "City",
+    "country": "Country",
+    "score": 0.9,
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "summary": "Why this city",
+    "areas": [{{
+        "city": "City",
+        "area": "Neighborhood",
+        "score": 0.85,
+        "details": "Analysis",
+        "estimated_monthly_revenue": "$5K-$10K",
+        "estimated_startup_cost": "$20K-$40K",
+        "target_customers": "Demographics"
+    }}]
+}}]"""
     
-    Provide 3-8 cities worldwide that are best for this business opportunity.
-    For EACH city, you MUST provide 4-6 specific neighborhoods/areas.
-    
-    Example areas for major cities:
-    - Islamabad: F-6, F-7, F-8, Blue Area, Saddar, Bahria Town, DHA
-    - Dubai: Downtown Dubai, Business Bay, Jumeirah, Dubai Marina, DIFC
-    - London: Shoreditch, Camden, Soho, Notting Hill, Canary Wharf
-    
-    For each area provide: demographics, foot traffic, competition level, average rent.
-    Include estimated_monthly_revenue and estimated_startup_cost for each area.
-    
-    Return ONLY valid JSON array with this exact structure:
-    [{{
-        "city": "City Name",
-        "country": "Country",
-        "score": 0.95,
-        "latitude": 00.00,
-        "longitude": 00.00,
-        "summary": "Why this city",
-        "areas": [
-            {{
-                "city": "City Name",
-                "area": "Specific Neighborhood Name",
-                "score": 0.92,
-                "details": "Detailed analysis",
-                "estimated_monthly_revenue": "$5,000 - $8,000",
-                "estimated_startup_cost": "$20,000 - $30,000",
-                "target_customers": "Young professionals"
-            }}
-        ]
-    }}]"""
-    
-    response = model.generate_content(prompt)
-    json_str = response.text.strip()
+    response_text = call_gemini_api(prompt)
+    json_str = response_text.strip()
     if json_str.startswith('```json'):
         json_str = json_str[7:]
     if json_str.startswith('```'):
@@ -99,39 +85,21 @@ def get_recommendations_from_ai(query: str) -> List[dict]:
     return json.loads(json_str.strip())
 
 def get_location_insights(lat: float, lng: float, business_type: str) -> dict:
-    # Configure API key inside function for serverless
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise Exception("GOOGLE_API_KEY environment variable not set")
+    prompt = f"""Analyze location: {lat}, {lng} for {business_type}.
+
+Return ONLY valid JSON:
+{{
+    "city": "City",
+    "area": "Neighborhood",
+    "score": 0.8,
+    "details": "Analysis",
+    "estimated_monthly_revenue": "$X-$Y",
+    "estimated_startup_cost": "$X-$Y",
+    "target_customers": "Demographics"
+}}"""
     
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-pro")
-    
-    prompt = f"""Analyze location at {lat}, {lng} for {business_type}.
-    
-    Provide hyper-local insights within 200-500m radius:
-    - Exact neighborhood/area name
-    - Street-level demographics
-    - Nearby landmarks with distances
-    - Parking and transport at this exact spot
-    - Commercial rent for this specific area
-    - Competitor count within walking distance
-    
-    Include estimated_monthly_revenue, estimated_startup_cost, target_customers.
-    
-    Return ONLY valid JSON:
-    {{
-        "city": "City",
-        "area": "Micro-neighborhood (e.g., F-7 Markaz)",
-        "score": 0.85,
-        "details": "Block-by-block analysis",
-        "estimated_monthly_revenue": "$X - $Y",
-        "estimated_startup_cost": "$X - $Y",
-        "target_customers": "Demographics"
-    }}"""
-    
-    response = model.generate_content(prompt)
-    json_str = response.text.strip()
+    response_text = call_gemini_api(prompt)
+    json_str = response_text.strip()
     if json_str.startswith('```json'):
         json_str = json_str[7:]
     if json_str.startswith('```'):
@@ -152,14 +120,11 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    status = {
-        "message": "Geo Market Match API is running",
-        "genai_available": GENAI_AVAILABLE,
+    return {
+        "message": "Geo Market Match API",
+        "status": "running",
         "api_key_set": bool(os.getenv("GOOGLE_API_KEY"))
     }
-    if not GENAI_AVAILABLE:
-        status["genai_error"] = GENAI_ERROR
-    return status
 
 @app.post("/recommend", response_model=RecommendationResponse)
 def get_recommendations(request: RecommendationRequest):
@@ -181,6 +146,5 @@ def get_map_insight(request: MapClickRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Vercel serverless handler
-from mangum import Mangum
+# Vercel handler
 handler = Mangum(app, lifespan="off")

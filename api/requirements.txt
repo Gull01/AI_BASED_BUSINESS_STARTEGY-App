@@ -1,4 +1,4 @@
-fastapi==0.104.1
-google-generativeai
-pydantic==2.5.0
-mangum==0.17.0
+fastapi
+pydantic
+mangum
+requests
