@@ -172,7 +172,7 @@ function App() {
             <div className={`flex-grow relative rounded-2xl overflow-hidden border shadow-sm min-h-[320px] lg:min-h-0 ${isDark ? 'border-slate-700' : 'border-emerald-200'}`}>
           <button
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className={`absolute top-4 left-4 z-[1002] h-9 w-9 rounded-full border shadow-md transition-colors ${isDark ? 'bg-slate-900/90 border-slate-600 text-slate-100 hover:bg-slate-800' : 'bg-white/95 border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}
+            className={`absolute top-4 right-4 z-[1002] h-9 w-9 rounded-full border shadow-md transition-colors ${isDark ? 'bg-slate-900/90 border-slate-600 text-slate-100 hover:bg-slate-800' : 'bg-white/95 border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}
             title={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
             aria-label={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
           >
