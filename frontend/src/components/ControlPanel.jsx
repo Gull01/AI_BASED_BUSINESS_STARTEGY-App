@@ -43,41 +43,41 @@ const ControlPanel = ({ onSearch, loading, isDark }) => {
   };
 
   return (
-    <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-gradient-to-br from-white via-emerald-50 to-lime-50 border-emerald-200'} rounded-2xl shadow-xl border overflow-hidden`}>
+    <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-emerald-200'} rounded-2xl shadow-xl border overflow-hidden`}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-700 to-rose-600 p-6 text-white">
+      <div className={`${isDark ? 'bg-slate-800 text-slate-100' : 'bg-emerald-50 text-slate-800'} p-6 border-b ${isDark ? 'border-slate-700' : 'border-emerald-100'}`}>
         <div className="flex items-start justify-between gap-3 mb-2">
           <h2 className="text-2xl font-bold">
             AI Business Intelligence
           </h2>
           <button
             onClick={() => setShowHowTo((prev) => !prev)}
-            className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 text-white font-black text-sm transition-colors"
+            className={`${isDark ? 'bg-slate-700 hover:bg-slate-600 text-slate-100' : 'bg-white hover:bg-emerald-100 text-emerald-700 border border-emerald-200'} h-8 w-8 rounded-full font-black text-sm transition-colors`}
             title="Toggle quick help"
             aria-label="Toggle quick help"
           >
             ?
           </button>
         </div>
-        <p className="text-sm text-emerald-50 mb-4">
+        <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
           Get data-driven insights for any location and business type worldwide
         </p>
 
         {/* Compact How to Use Guide */}
         {showHowTo && (
-          <div className="bg-white/20 rounded-lg p-3 mt-3 backdrop-blur-sm relative">
+          <div className={`${isDark ? 'bg-slate-700/80' : 'bg-white border border-emerald-100'} rounded-lg p-3 mt-3 relative`}>
             <button
               onClick={() => setShowHowTo(false)}
-              className="absolute top-2 right-2 text-white/80 hover:text-white text-base leading-none"
+              className={`${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-400 hover:text-slate-700'} absolute top-2 right-2 text-base leading-none`}
               title="Close quick help"
               aria-label="Close quick help"
             >
               ×
             </button>
-            <div className="text-xs font-semibold mb-2 text-white">
+            <div className={`text-xs font-semibold mb-2 ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
               How to Use:
             </div>
-            <div className="space-y-1.5 text-xs text-emerald-50 pr-5">
+            <div className={`space-y-1.5 text-xs pr-5 ${isDark ? 'text-slate-200' : 'text-slate-600'}`}>
               <div className="flex items-start gap-2">
                 <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
                 <span>Type your question below</span>
@@ -198,7 +198,7 @@ const ControlPanel = ({ onSearch, loading, isDark }) => {
                 key={idx}
                 onClick={() => handleExampleClick(example)}
                 disabled={loading}
-                className={`w-full text-left text-sm px-4 py-3 rounded-lg border transition-all disabled:opacity-50 hover:shadow-md ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:border-emerald-400 hover:text-emerald-300' : 'bg-gradient-to-r from-white to-emerald-50 hover:from-emerald-50 hover:to-lime-100 border-emerald-200 hover:border-emerald-400 text-gray-700 hover:text-emerald-800'}`}
+                className={`w-full text-left text-sm px-4 py-3 rounded-lg border transition-all disabled:opacity-50 hover:shadow-md ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:border-emerald-400 hover:text-emerald-300' : 'bg-white hover:bg-emerald-50 border-emerald-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800'}`}
               >
                 "{example}"
               </button>
@@ -207,7 +207,7 @@ const ControlPanel = ({ onSearch, loading, isDark }) => {
         </div>
 
         {/* Pro Tip */}
-        <div className={`p-4 rounded-xl border-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-gradient-to-r from-emerald-100 to-lime-100 border-emerald-300'}`}>
+        <div className={`p-4 rounded-xl border-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-emerald-50 border-emerald-200'}`}>
           <p className={`text-sm ${isDark ? 'text-emerald-200' : 'text-emerald-900'}`}>
             <span className="font-bold text-base">💡 Pro Tip:</span> Click anywhere on the map to get instant location-specific insights!
           </p>
