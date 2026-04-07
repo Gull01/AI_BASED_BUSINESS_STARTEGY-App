@@ -19,6 +19,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showHelpPanel, setShowHelpPanel] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
     localStorage.setItem('geo-theme', isDark ? 'dark' : 'light');
@@ -119,6 +120,7 @@ function App() {
       <main className="flex-grow flex flex-col lg:flex-row overflow-hidden gap-4 p-3 sm:p-4">
         
         {/* Sidebar */}
+        {isSidebarOpen && (
           <div className={`w-full lg:w-96 lg:flex-shrink-0 p-4 overflow-y-auto border rounded-2xl shadow-sm ${isDark ? 'border-slate-700 bg-slate-900/90' : 'border-emerald-200 bg-white/95'}`}>
             <ControlPanel onSearch={handleSearch} loading={loading} isDark={isDark} />
            
@@ -138,7 +140,7 @@ function App() {
                />
                
                {selectedCity && (
-                   <div className={`mt-4 p-4 rounded-xl shadow border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-gradient-to-br from-emerald-50 to-rose-50 border-emerald-200'}`}>
+                   <div className={`mt-4 p-4 rounded-xl shadow border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-emerald-50/70 border-emerald-200'}`}>
                        <h3 className={`font-bold border-b pb-2 mb-2 ${isDark ? 'text-emerald-300 border-slate-600' : 'text-emerald-900 border-emerald-300'}`}>
                          Market Analysis: {selectedCity.city}
                        </h3>
@@ -164,9 +166,18 @@ function App() {
               </>
            )}
         </div>
+        )}
 
         {/* Map Area */}
             <div className={`flex-grow relative rounded-2xl overflow-hidden border shadow-sm min-h-[320px] lg:min-h-0 ${isDark ? 'border-slate-700' : 'border-emerald-200'}`}>
+          <button
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            className={`absolute top-4 left-4 z-[1002] h-9 w-9 rounded-full border shadow-md transition-colors ${isDark ? 'bg-slate-900/90 border-slate-600 text-slate-100 hover:bg-slate-800' : 'bg-white/95 border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}
+            title={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
+            aria-label={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
+          >
+            {isSidebarOpen ? '←' : '→'}
+          </button>
            <MapComponent 
               data={recommendations} 
               selectedCity={selectedCity} 
