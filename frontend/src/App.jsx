@@ -136,6 +136,7 @@ function App() {
             onCitySelect={handleCitySelect}
             onMapClick={handleMapClick}
             isDark={isDark}
+            isSidebarOpen={isSidebarOpen}
           />
 
           {/* Help Guide */}
