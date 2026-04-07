@@ -18,7 +18,7 @@ function App() {
   const [currentQuery, setCurrentQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showHelpPanel, setShowHelpPanel] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('geo-theme', isDark ? 'dark' : 'light');
@@ -31,7 +31,7 @@ function App() {
     setSelectedArea(null);
     setMapInsight(null);
     setCurrentQuery(query);
-    setShowWelcome(false); // Dismiss welcome on first search
+    setShowHelpPanel(false);
     try {
       const data = await getRecommendations(query);
       setRecommendations(data.recommendations);
@@ -54,7 +54,7 @@ function App() {
   };
 
   const handleMapClick = async (lat, lng) => {
-    setShowWelcome(false); // Dismiss welcome on first map click
+    setShowHelpPanel(false);
     
     // Use a generic business query if none specified
     const businessQuery = currentQuery || "general business opportunities";
@@ -92,6 +92,14 @@ function App() {
                Geo Market Match <span className="ml-2 text-xs sm:text-sm font-medium text-emerald-50 bg-white/20 px-3 py-1 rounded-full">AI-Powered Location Intelligence</span>
             </h1>
             <div className="flex items-center gap-2 text-xs sm:text-sm flex-wrap">
+              <button
+                onClick={() => setShowHelpPanel(true)}
+                className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 text-white font-black text-base transition-colors"
+                title="Open help"
+                aria-label="Open help"
+              >
+                ?
+              </button>
               <button
                 onClick={() => setIsDark((prev) => !prev)}
                 className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-semibold transition-colors"
@@ -168,13 +176,13 @@ function App() {
               isDark={isDark}
            />
            
-           {/* Welcome Guide - Shows when no search has been made */}
-           {showWelcome && recommendations.length === 0 && !loading && (
+           {/* Help Guide */}
+           {showHelpPanel && (
                  <div className={`absolute inset-0 flex items-center justify-center z-[999] ${isDark ? 'bg-slate-950/70' : 'bg-emerald-950/10'}`}>
                    <div className={`${isDark ? 'bg-slate-900 border-emerald-400' : 'bg-white border-emerald-500'} rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border-4 relative`}>
                        {/* Close Button */}
                        <button 
-                           onClick={() => setShowWelcome(false)}
+                           onClick={() => setShowHelpPanel(false)}
                              className={`absolute top-4 right-4 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800' : 'text-gray-400 hover:text-gray-600 hover:bg-rose-50'}`}
                            title="Close welcome screen"
                        >
@@ -214,8 +222,8 @@ function App() {
                                <p className="text-sm text-emerald-800 font-medium"><span className="font-bold">Tip:</span> Search first to set your business type, then click the map for location-specific insights</p>
                            </div>
                            
-                           <button 
-                               onClick={() => setShowWelcome(false)}
+                             <button 
+                               onClick={() => setShowHelpPanel(false)}
                                  className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-rose-700 transition-all shadow-lg"
                            >
                                Got it! Start Exploring →
