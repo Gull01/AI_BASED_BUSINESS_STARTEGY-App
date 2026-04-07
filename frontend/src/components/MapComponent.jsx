@@ -104,7 +104,22 @@ const MapClickHandler = ({ onMapClick }) => {
   return null;
 };
 
-const MapComponent = ({ data, selectedCity, onCitySelect, selectedArea, onMapClick, isDark }) => {
+const ResizeMapOnLayoutChange = ({ isSidebarOpen }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    // Leaflet needs explicit resize recalculation when parent width changes.
+    const timer = setTimeout(() => {
+      map.invalidateSize({ animate: false });
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [isSidebarOpen, map]);
+
+  return null;
+};
+
+const MapComponent = ({ data, selectedCity, onCitySelect, selectedArea, onMapClick, isDark, isSidebarOpen }) => {
   const getColor = (score) => {
     if (score >= 0.75) return '#10B981'; // Green
     return '#EF4444'; // Red
@@ -124,6 +139,7 @@ const MapComponent = ({ data, selectedCity, onCitySelect, selectedArea, onMapCli
         />
         
         <MapClickHandler onMapClick={onMapClick} />
+        <ResizeMapOnLayoutChange isSidebarOpen={isSidebarOpen} />
         <AutoZoomToResults data={data} selectedCity={selectedCity} />
         
         <style>{`
