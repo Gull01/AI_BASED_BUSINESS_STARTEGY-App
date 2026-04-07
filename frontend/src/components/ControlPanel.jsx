@@ -4,6 +4,7 @@ const ControlPanel = ({ onSearch, loading, isDark }) => {
   const [query, setQuery] = useState('');
   const [businessType, setBusinessType] = useState('');
   const [queryType, setQueryType] = useState('business'); // 'business' or 'general'
+  const [showHowTo, setShowHowTo] = useState(false);
 
   const businessCategories = [
     'Restaurant', 'Coffee Shop', 'Gym/Fitness Center', 'Retail Store', 
@@ -45,33 +46,53 @@ const ControlPanel = ({ onSearch, loading, isDark }) => {
     <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-gradient-to-br from-white via-emerald-50 to-lime-50 border-emerald-200'} rounded-2xl shadow-xl border overflow-hidden`}>
       {/* Header */}
       <div className="bg-gradient-to-r from-emerald-700 to-rose-600 p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">
-          AI Business Intelligence
-        </h2>
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h2 className="text-2xl font-bold">
+            AI Business Intelligence
+          </h2>
+          <button
+            onClick={() => setShowHowTo((prev) => !prev)}
+            className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 text-white font-black text-sm transition-colors"
+            title="Toggle quick help"
+            aria-label="Toggle quick help"
+          >
+            ?
+          </button>
+        </div>
         <p className="text-sm text-emerald-50 mb-4">
           Get data-driven insights for any location and business type worldwide
         </p>
-        
-        {/* How to Use Guide */}
-        <div className="bg-white/20 rounded-lg p-3 mt-3 backdrop-blur-sm">
-          <div className="text-xs font-semibold mb-2 text-white">
-            How to Use:
+
+        {/* Compact How to Use Guide */}
+        {showHowTo && (
+          <div className="bg-white/20 rounded-lg p-3 mt-3 backdrop-blur-sm relative">
+            <button
+              onClick={() => setShowHowTo(false)}
+              className="absolute top-2 right-2 text-white/80 hover:text-white text-base leading-none"
+              title="Close quick help"
+              aria-label="Close quick help"
+            >
+              ×
+            </button>
+            <div className="text-xs font-semibold mb-2 text-white">
+              How to Use:
+            </div>
+            <div className="space-y-1.5 text-xs text-emerald-50 pr-5">
+              <div className="flex items-start gap-2">
+                <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+                <span>Type your question below</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+                <span>See city and neighborhood recommendations</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="bg-white text-rose-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
+                <span>Click map for local AI insights</span>
+              </div>
+            </div>
           </div>
-          <div className="space-y-1.5 text-xs text-emerald-50">
-            <div className="flex items-start gap-2">
-              <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
-              <span>Type your question below (e.g., "Best areas for cafe in Islamabad")</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
-              <span>View recommended cities and neighborhoods on the map</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="bg-white text-rose-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
-              <span>Click any map location for detailed local insights</span>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="p-6 space-y-6">
