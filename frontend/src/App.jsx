@@ -117,8 +117,93 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow flex flex-col lg:flex-row overflow-hidden gap-4 p-3 sm:p-4">
-        
+      <main className={`flex-grow flex flex-col lg:flex-row overflow-hidden ${isSidebarOpen ? 'gap-4 p-3 sm:p-4' : 'gap-0 p-0'}`}>
+
+        {/* Map Area */}
+        <div className={`flex-grow relative overflow-hidden min-h-[320px] lg:min-h-0 ${isSidebarOpen ? `rounded-2xl border shadow-sm ${isDark ? 'border-slate-700' : 'border-emerald-200'}` : 'rounded-none border-0 shadow-none'}`}>
+          <button
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            className={`absolute top-4 right-4 z-[1002] h-9 w-9 rounded-full border shadow-md transition-colors ${isDark ? 'bg-slate-900/90 border-slate-600 text-slate-100 hover:bg-slate-800' : 'bg-white/95 border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}
+            title={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
+            aria-label={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
+          >
+            {isSidebarOpen ? '→' : '←'}
+          </button>
+          <MapComponent 
+            data={recommendations} 
+            selectedCity={selectedCity} 
+            selectedArea={selectedArea}
+            onCitySelect={handleCitySelect}
+            onMapClick={handleMapClick}
+            isDark={isDark}
+          />
+
+          {/* Help Guide */}
+          {showHelpPanel && (
+            <div className={`absolute inset-0 flex items-center justify-center z-[999] ${isDark ? 'bg-slate-950/70' : 'bg-emerald-950/10'}`}>
+              <div className={`${isDark ? 'bg-slate-900 border-emerald-400' : 'bg-white border-emerald-500'} rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border-4 relative`}>
+                  {/* Close Button */}
+                  <button 
+                      onClick={() => setShowHelpPanel(false)}
+                        className={`absolute top-4 right-4 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800' : 'text-gray-400 hover:text-gray-600 hover:bg-rose-50'}`}
+                      title="Close welcome screen"
+                  >
+                      ×
+                  </button>
+                  
+                  <div className="text-center">
+                      <div className="text-5xl mb-4 font-bold text-emerald-500">GEO MARKET MATCH</div>
+                      <h2 className={`text-2xl font-semibold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-700'}`}>AI-Powered Location Intelligence</h2>
+                      <p className={`${isDark ? 'text-slate-300' : 'text-gray-600'} mb-6 text-lg`}>AI-powered business location intelligence</p>
+                      
+                      <div className="grid md:grid-cols-2 gap-4 mb-6 text-left">
+                            <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-xl border-2 border-emerald-200">
+                              <div className="text-2xl mb-2 font-bold text-emerald-600">1</div>
+                              <h3 className="font-bold text-emerald-900 mb-2">Search with AI</h3>
+                              <p className={`text-sm ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>Ask questions like:</p>
+                              <ul className={`text-xs mt-2 space-y-1 ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
+                                  <li>• "Best areas for cafe in Islamabad"</li>
+                                  <li>• "Where to open restaurant in Dubai"</li>
+                                  <li>• "Tech startup opportunities in Berlin"</li>
+                              </ul>
+                          </div>
+                          
+                            <div className="bg-gradient-to-br from-rose-50 to-red-50 p-5 rounded-xl border-2 border-rose-200">
+                              <div className="text-2xl mb-2 font-bold text-rose-600">2</div>
+                              <h3 className="font-bold text-rose-900 mb-2">Click on Map</h3>
+                              <p className={`text-sm ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>Explore any location:</p>
+                              <ul className={`text-xs mt-2 space-y-1 ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
+                                  <li>• Click anywhere on the map</li>
+                                  <li>• Get instant AI insights</li>
+                                  <li>• See opportunities & challenges</li>
+                              </ul>
+                          </div>
+                      </div>
+                      
+                        <div className="bg-emerald-50 border-2 border-emerald-200 rounded-lg p-4 mb-4">
+                          <p className="text-sm text-emerald-800 font-medium"><span className="font-bold">Tip:</span> Search first to set your business type, then click the map for location-specific insights</p>
+                      </div>
+                      
+                      <button 
+                          onClick={() => setShowHelpPanel(false)}
+                            className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-rose-700 transition-all shadow-lg"
+                      >
+                          Got it! Start Exploring →
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
+      {loading && (
+            <div className={`absolute inset-0 flex items-center justify-center z-[1000] ${isDark ? 'bg-slate-950/70' : 'bg-white/80'}`}>
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+                  <p className={`${isDark ? 'text-slate-200' : 'text-gray-600'} font-medium`}>AI is analyzing your query...</p>
+              </div>
+          </div>
+      )}
+        </div>
+
         {/* Sidebar */}
         {isSidebarOpen && (
           <div className={`w-full lg:w-96 lg:flex-shrink-0 p-4 overflow-y-auto border rounded-2xl shadow-sm ${isDark ? 'border-slate-700 bg-slate-900/90' : 'border-emerald-200 bg-white/95'}`}>
@@ -167,91 +252,6 @@ function App() {
            )}
         </div>
         )}
-
-        {/* Map Area */}
-            <div className={`flex-grow relative rounded-2xl overflow-hidden border shadow-sm min-h-[320px] lg:min-h-0 ${isDark ? 'border-slate-700' : 'border-emerald-200'}`}>
-          <button
-            onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className={`absolute top-4 right-4 z-[1002] h-9 w-9 rounded-full border shadow-md transition-colors ${isDark ? 'bg-slate-900/90 border-slate-600 text-slate-100 hover:bg-slate-800' : 'bg-white/95 border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}
-            title={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
-            aria-label={isSidebarOpen ? 'Collapse panel' : 'Expand panel'}
-          >
-            {isSidebarOpen ? '←' : '→'}
-          </button>
-           <MapComponent 
-              data={recommendations} 
-              selectedCity={selectedCity} 
-              selectedArea={selectedArea}
-              onCitySelect={handleCitySelect}
-              onMapClick={handleMapClick}
-              isDark={isDark}
-           />
-           
-           {/* Help Guide */}
-           {showHelpPanel && (
-                 <div className={`absolute inset-0 flex items-center justify-center z-[999] ${isDark ? 'bg-slate-950/70' : 'bg-emerald-950/10'}`}>
-                   <div className={`${isDark ? 'bg-slate-900 border-emerald-400' : 'bg-white border-emerald-500'} rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border-4 relative`}>
-                       {/* Close Button */}
-                       <button 
-                           onClick={() => setShowHelpPanel(false)}
-                             className={`absolute top-4 right-4 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800' : 'text-gray-400 hover:text-gray-600 hover:bg-rose-50'}`}
-                           title="Close welcome screen"
-                       >
-                           ×
-                       </button>
-                       
-                       <div className="text-center">
-                           <div className="text-5xl mb-4 font-bold text-emerald-500">GEO MARKET MATCH</div>
-                           <h2 className={`text-2xl font-semibold mb-3 ${isDark ? 'text-slate-100' : 'text-gray-700'}`}>AI-Powered Location Intelligence</h2>
-                           <p className={`${isDark ? 'text-slate-300' : 'text-gray-600'} mb-6 text-lg`}>AI-powered business location intelligence</p>
-                           
-                           <div className="grid md:grid-cols-2 gap-4 mb-6 text-left">
-                                 <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-xl border-2 border-emerald-200">
-                                   <div className="text-2xl mb-2 font-bold text-emerald-600">1</div>
-                                   <h3 className="font-bold text-emerald-900 mb-2">Search with AI</h3>
-                                   <p className={`text-sm ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>Ask questions like:</p>
-                                   <ul className={`text-xs mt-2 space-y-1 ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
-                                       <li>• "Best areas for cafe in Islamabad"</li>
-                                       <li>• "Where to open restaurant in Dubai"</li>
-                                       <li>• "Tech startup opportunities in Berlin"</li>
-                                   </ul>
-                               </div>
-                               
-                                 <div className="bg-gradient-to-br from-rose-50 to-red-50 p-5 rounded-xl border-2 border-rose-200">
-                                   <div className="text-2xl mb-2 font-bold text-rose-600">2</div>
-                                   <h3 className="font-bold text-rose-900 mb-2">Click on Map</h3>
-                                   <p className={`text-sm ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>Explore any location:</p>
-                                   <ul className={`text-xs mt-2 space-y-1 ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
-                                       <li>• Click anywhere on the map</li>
-                                       <li>• Get instant AI insights</li>
-                                       <li>• See opportunities & challenges</li>
-                                   </ul>
-                               </div>
-                           </div>
-                           
-                             <div className="bg-emerald-50 border-2 border-emerald-200 rounded-lg p-4 mb-4">
-                               <p className="text-sm text-emerald-800 font-medium"><span className="font-bold">Tip:</span> Search first to set your business type, then click the map for location-specific insights</p>
-                           </div>
-                           
-                             <button 
-                               onClick={() => setShowHelpPanel(false)}
-                                 className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-rose-700 transition-all shadow-lg"
-                           >
-                               Got it! Start Exploring →
-                           </button>
-                       </div>
-                   </div>
-               </div>
-           )}
-           {loading && (
-                 <div className={`absolute inset-0 flex items-center justify-center z-[1000] ${isDark ? 'bg-slate-950/70' : 'bg-white/80'}`}>
-                   <div className="text-center">
-                     <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-                       <p className={`${isDark ? 'text-slate-200' : 'text-gray-600'} font-medium`}>AI is analyzing your query...</p>
-                   </div>
-               </div>
-           )}
-        </div>
 
         {/* Map Click Insight Panel */}
         {mapInsight && (
