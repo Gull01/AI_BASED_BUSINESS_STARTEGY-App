@@ -27,7 +27,7 @@ ChartJS.register(
   Legend
 );
 
-const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
+const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect, isDark }) => {
   if (!city || !city.areas || city.areas.length === 0) {
     return null;
   }
@@ -41,9 +41,9 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
         label: 'Area Suitability Score',
         data: sortedAreas.map(d => d.score),
         backgroundColor: sortedAreas.map(d => 
-            selectedArea?.area_name === d.area_name ? 'rgba(225, 29, 72, 0.75)' : 'rgba(16, 185, 129, 0.6)'
+            selectedArea?.area_name === d.area_name ? 'rgba(244, 63, 94, 0.8)' : 'rgba(22, 163, 74, 0.8)'
         ),
-        borderColor: 'rgba(5, 150, 105, 1)',
+        borderColor: isDark ? 'rgba(74, 222, 128, 1)' : 'rgba(21, 128, 61, 1)',
         borderWidth: 1,
       },
     ],
@@ -60,7 +60,7 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
       title: {
         display: true,
         text: `Best Areas in ${city.city}`,
-        color: '#065f46',
+        color: isDark ? '#a7f3d0' : '#065f46',
         font: {
           size: 14,
           weight: 'bold'
@@ -82,31 +82,31 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md border border-emerald-100 mt-4">
+    <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-emerald-200'} p-4 rounded-xl shadow-md border mt-4`}>
        <div className="h-64 mb-4">
          <Bar data={chartData} options={options} />
        </div>
        
        {/* Area Details List */}
        <div className="space-y-2 max-h-48 overflow-y-auto">
-         <h4 className="font-semibold text-sm text-emerald-900 mb-2">Neighborhood Insights</h4>
+         <h4 className={`font-semibold text-sm mb-2 ${isDark ? 'text-emerald-300' : 'text-emerald-900'}`}>Neighborhood Insights</h4>
          {sortedAreas.map((area, idx) => (
            <div 
              key={idx}
              onClick={() => onAreaSelect(area)}
              className={`p-2 rounded border cursor-pointer transition-all ${
                selectedArea?.area_name === area.area_name 
-                 ? 'border-rose-300 bg-rose-50' 
-                 : 'border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50/40'
+                 ? isDark ? 'border-rose-500 bg-rose-900/30' : 'border-rose-300 bg-rose-50'
+                 : isDark ? 'border-slate-700 hover:border-emerald-500 hover:bg-slate-800' : 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50/50'
              }`}
            >
              <div className="flex justify-between items-center mb-1">
-               <span className="font-medium text-sm">📍 {area.area_name}</span>
-               <span className="text-xs font-semibold text-emerald-700">
+               <span className={`font-medium text-sm ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>📍 {area.area_name}</span>
+               <span className={`text-xs font-semibold ${isDark ? 'text-emerald-300' : 'text-emerald-700'}`}>
                  {(area.score * 100).toFixed(0)}/100
                </span>
              </div>
-             <p className="text-xs text-gray-600">{area.characteristics}</p>
+             <p className={`text-xs ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>{area.characteristics}</p>
            </div>
          ))}
        </div>

@@ -19,7 +19,7 @@ ChartJS.register(
   Legend
 );
 
-const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
+const RankingPanel = ({ data, selectedCity, onCitySelect, isDark }) => {
   // Sort data Descending
   const sortedData = [...data].sort((a, b) => b.score - a.score);
 
@@ -30,9 +30,9 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
         label: 'Suitability Score',
         data: sortedData.map(d => d.score),
         backgroundColor: sortedData.map(d => 
-            selectedCity?.city === d.city ? 'rgba(225, 29, 72, 0.75)' : 'rgba(16, 185, 129, 0.6)'
+            selectedCity?.city === d.city ? 'rgba(244, 63, 94, 0.8)' : 'rgba(22, 163, 74, 0.8)'
         ),
-        borderColor: 'rgba(5, 150, 105, 1)',
+        borderColor: isDark ? 'rgba(74, 222, 128, 1)' : 'rgba(21, 128, 61, 1)',
         borderWidth: 1,
       },
     ],
@@ -49,7 +49,7 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
       title: {
         display: true,
         text: 'Top Cities Ranking',
-        color: '#065f46',
+        color: isDark ? '#a7f3d0' : '#065f46',
       },
     },
     onClick: (event, elements) => {
@@ -67,7 +67,7 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md border border-emerald-100 h-96 flex flex-col">
+    <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-emerald-200'} p-4 rounded-xl shadow-md border h-96 flex flex-col`}>
        <div className="flex-grow">
          <Bar data={chartData} options={options} />
        </div>
