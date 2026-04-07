@@ -1,11 +1,11 @@
 import React from 'react';
 
-const MapInsightPanel = ({ insight, onClose }) => {
+const MapInsightPanel = ({ insight, onClose, isDark }) => {
   if (!insight) return null;
 
   const getScoreColor = (score) => {
-    if (score >= 0.7) return 'text-emerald-700 bg-emerald-100';
-    return 'text-rose-700 bg-rose-100';
+    if (score >= 0.7) return isDark ? 'text-emerald-200 bg-emerald-900/50' : 'text-emerald-700 bg-emerald-100';
+    return isDark ? 'text-rose-200 bg-rose-900/50' : 'text-rose-700 bg-rose-100';
   };
 
   const getScoreBgColor = (score) => {
@@ -14,7 +14,7 @@ const MapInsightPanel = ({ insight, onClose }) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 w-[450px] bg-white rounded-2xl shadow-2xl border border-emerald-100 z-[1001] animate-slideIn overflow-hidden">
+    <div className={`fixed bottom-6 right-6 w-[450px] rounded-2xl shadow-2xl border z-[1001] animate-slideIn overflow-hidden ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-emerald-200'}`}>
       <div className="bg-gradient-to-r from-emerald-700 to-rose-600 text-white p-5 flex justify-between items-center">
         <div>
           <h3 className="font-bold text-lg">{insight.location_name}</h3>
@@ -32,9 +32,9 @@ const MapInsightPanel = ({ insight, onClose }) => {
       
       <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
         {/* Score Display */}
-        <div className="bg-gradient-to-br from-emerald-50 to-rose-50 rounded-xl p-4 border-2 border-emerald-200">
+        <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-gradient-to-br from-emerald-100 to-lime-100 border-emerald-300'} rounded-xl p-4 border-2`}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-bold text-gray-700">Suitability Score</span>
+            <span className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>Suitability Score</span>
             <div className={`px-4 py-2 rounded-full font-bold text-lg ${getScoreColor(insight.recommendation_score)}`}>
               {(insight.recommendation_score * 100).toFixed(0)}/100
             </div>
@@ -48,26 +48,26 @@ const MapInsightPanel = ({ insight, onClose }) => {
         </div>
 
         {/* Insights */}
-        <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-lg">
+        <div className={`${isDark ? 'bg-slate-800 border-emerald-500' : 'bg-emerald-50 border-emerald-500'} border-l-4 p-4 rounded-lg`}>
           <h4 className="font-bold text-sm text-emerald-900 mb-2 flex items-center gap-2">
             <span>💡</span> Key Insights
           </h4>
-          <p className="text-sm text-gray-800 leading-relaxed">{insight.insights}</p>
+          <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>{insight.insights}</p>
         </div>
 
         {/* Financial Estimates */}
         {(insight.estimated_monthly_revenue || insight.estimated_startup_cost) && (
           <div className="grid grid-cols-2 gap-3">
             {insight.estimated_monthly_revenue && (
-              <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
-                <p className="text-xs text-green-700 font-semibold mb-1">Est. Monthly Revenue</p>
-                <p className="text-sm font-bold text-green-900">{insight.estimated_monthly_revenue}</p>
+              <div className={`${isDark ? 'bg-emerald-900/30 border-emerald-700' : 'bg-green-50 border-green-200'} border-2 rounded-xl p-4`}>
+                <p className={`text-xs font-semibold mb-1 ${isDark ? 'text-emerald-300' : 'text-green-700'}`}>Est. Monthly Revenue</p>
+                <p className={`text-sm font-bold ${isDark ? 'text-emerald-100' : 'text-green-900'}`}>{insight.estimated_monthly_revenue}</p>
               </div>
             )}
             {insight.estimated_startup_cost && (
-              <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-4">
-                <p className="text-xs text-rose-700 font-semibold mb-1">Est. Startup Cost</p>
-                <p className="text-sm font-bold text-rose-900">{insight.estimated_startup_cost}</p>
+              <div className={`${isDark ? 'bg-rose-900/30 border-rose-700' : 'bg-rose-50 border-rose-200'} border-2 rounded-xl p-4`}>
+                <p className={`text-xs font-semibold mb-1 ${isDark ? 'text-rose-300' : 'text-rose-700'}`}>Est. Startup Cost</p>
+                <p className={`text-sm font-bold ${isDark ? 'text-rose-100' : 'text-rose-900'}`}>{insight.estimated_startup_cost}</p>
               </div>
             )}
           </div>
@@ -75,24 +75,24 @@ const MapInsightPanel = ({ insight, onClose }) => {
 
         {/* Target Customers */}
         {insight.target_customers && (
-          <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
-            <h4 className="font-bold text-sm text-emerald-900 mb-2">
+          <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-emerald-50 border-emerald-200'} border-2 rounded-xl p-4`}>
+            <h4 className={`font-bold text-sm mb-2 ${isDark ? 'text-emerald-300' : 'text-emerald-900'}`}>
               Target Customers
             </h4>
-            <p className="text-sm text-gray-800">{insight.target_customers}</p>
+            <p className={`text-sm ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>{insight.target_customers}</p>
           </div>
         )}
 
         {/* Opportunities */}
         {insight.opportunities && insight.opportunities.length > 0 && (
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
-            <h4 className="font-bold text-sm text-green-900 mb-3 flex items-center gap-2">
+          <div className={`${isDark ? 'bg-emerald-900/30 border-emerald-700' : 'bg-green-50 border-green-200'} border-2 rounded-xl p-4`}>
+            <h4 className={`font-bold text-sm mb-3 flex items-center gap-2 ${isDark ? 'text-emerald-200' : 'text-green-900'}`}>
               <span>✅</span> Opportunities
             </h4>
             <ul className="space-y-2">
               {insight.opportunities.map((opp, idx) => (
-                <li key={idx} className="text-sm text-gray-800 flex items-start gap-2">
-                  <span className="text-green-600 font-bold mt-0.5">→</span>
+                <li key={idx} className={`text-sm flex items-start gap-2 ${isDark ? 'text-slate-100' : 'text-gray-800'}`}>
+                  <span className={`font-bold mt-0.5 ${isDark ? 'text-emerald-300' : 'text-green-600'}`}>→</span>
                   <span>{opp}</span>
                 </li>
               ))}
@@ -102,14 +102,14 @@ const MapInsightPanel = ({ insight, onClose }) => {
 
         {/* Challenges */}
         {insight.challenges && insight.challenges.length > 0 && (
-          <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-4">
-            <h4 className="font-bold text-sm text-rose-900 mb-3 flex items-center gap-2">
+          <div className={`${isDark ? 'bg-rose-900/30 border-rose-700' : 'bg-rose-50 border-rose-200'} border-2 rounded-xl p-4`}>
+            <h4 className={`font-bold text-sm mb-3 flex items-center gap-2 ${isDark ? 'text-rose-200' : 'text-rose-900'}`}>
               <span>⚠️</span> Challenges
             </h4>
             <ul className="space-y-2">
               {insight.challenges.map((chal, idx) => (
-                <li key={idx} className="text-sm text-gray-800 flex items-start gap-2">
-                  <span className="text-rose-600 font-bold mt-0.5">→</span>
+                <li key={idx} className={`text-sm flex items-start gap-2 ${isDark ? 'text-slate-100' : 'text-gray-800'}`}>
+                  <span className={`font-bold mt-0.5 ${isDark ? 'text-rose-300' : 'text-rose-600'}`}>→</span>
                   <span>{chal}</span>
                 </li>
               ))}

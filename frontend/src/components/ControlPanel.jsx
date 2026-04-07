@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ControlPanel = ({ onSearch, loading }) => {
+const ControlPanel = ({ onSearch, loading, isDark }) => {
   const [query, setQuery] = useState('');
   const [businessType, setBusinessType] = useState('');
   const [queryType, setQueryType] = useState('business'); // 'business' or 'general'
@@ -42,7 +42,7 @@ const ControlPanel = ({ onSearch, loading }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white to-emerald-50/40 rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
+    <div className={`${isDark ? 'bg-slate-900 border-slate-700' : 'bg-gradient-to-br from-white via-emerald-50 to-lime-50 border-emerald-200'} rounded-2xl shadow-xl border overflow-hidden`}>
       {/* Header */}
       <div className="bg-gradient-to-r from-emerald-700 to-rose-600 p-6 text-white">
         <h2 className="text-2xl font-bold mb-2">
@@ -76,13 +76,13 @@ const ControlPanel = ({ onSearch, loading }) => {
 
       <div className="p-6 space-y-6">
         {/* Query Type Selection */}
-        <div className="flex gap-2 p-1 bg-emerald-50 rounded-lg border border-emerald-100">
+        <div className={`flex gap-2 p-1 rounded-lg border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-emerald-100 border-emerald-200'}`}>
           <button
             onClick={() => setQueryType('business')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${ 
               queryType === 'business'
-                ? 'bg-white text-emerald-700 shadow-sm border border-emerald-200'
-                : 'text-gray-600 hover:text-gray-900'
+                ? isDark ? 'bg-slate-700 text-emerald-300 shadow-sm border border-slate-600' : 'bg-white text-emerald-700 shadow-sm border border-emerald-300'
+                : isDark ? 'text-slate-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             Business Query
@@ -91,8 +91,8 @@ const ControlPanel = ({ onSearch, loading }) => {
             onClick={() => setQueryType('general')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
               queryType === 'general'
-                ? 'bg-white text-rose-700 shadow-sm border border-rose-200'
-                : 'text-gray-600 hover:text-gray-900'
+                ? isDark ? 'bg-slate-700 text-rose-300 shadow-sm border border-slate-600' : 'bg-white text-rose-700 shadow-sm border border-rose-200'
+                : isDark ? 'text-slate-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             General Info
@@ -103,13 +103,13 @@ const ControlPanel = ({ onSearch, loading }) => {
           {/* Business Type Selection (only for business queries) */}
           {queryType === 'business' && (
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className={`block text-sm font-semibold mb-2 ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>
                 Business Type (Optional)
               </label>
               <select
                 value={businessType}
                 onChange={(e) => setBusinessType(e.target.value)}
-                className="w-full px-4 py-3 text-base border-2 border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-white"
+                className={`w-full px-4 py-3 text-base border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all ${isDark ? 'border-slate-600 bg-slate-800 text-slate-100' : 'border-emerald-300 bg-white'}`}
               >
                 <option value="">Select a business type...</option>
                 {businessCategories.map((category) => (
@@ -123,7 +123,7 @@ const ControlPanel = ({ onSearch, loading }) => {
 
           {/* Query Input */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className={`block text-sm font-semibold mb-2 ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>
               Your Query
             </label>
             <textarea
@@ -135,7 +135,7 @@ const ControlPanel = ({ onSearch, loading }) => {
                   : "e.g., Tell me about business opportunities in New York..."
               }
               rows={4}
-              className="w-full px-4 py-3 text-base border-2 border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none transition-all"
+              className={`w-full px-4 py-3 text-base border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none transition-all ${isDark ? 'border-slate-600 bg-slate-800 text-slate-100 placeholder:text-slate-400' : 'border-emerald-300 bg-white text-slate-900'}`}
             />
           </div>
 
@@ -167,8 +167,8 @@ const ControlPanel = ({ onSearch, loading }) => {
         </form>
 
         {/* Example Queries */}
-        <div className="pt-4 border-t border-gray-200">
-          <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <div className={`pt-4 border-t ${isDark ? 'border-slate-700' : 'border-emerald-200'}`}>
+          <p className={`text-sm font-semibold mb-3 flex items-center gap-2 ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>
             <span>💡</span> Try these examples:
           </p>
           <div className="space-y-2">
@@ -177,7 +177,7 @@ const ControlPanel = ({ onSearch, loading }) => {
                 key={idx}
                 onClick={() => handleExampleClick(example)}
                 disabled={loading}
-                className="w-full text-left text-sm px-4 py-3 bg-gradient-to-r from-gray-50 to-emerald-50/40 hover:from-emerald-50 hover:to-rose-50 rounded-lg border border-emerald-100 hover:border-rose-200 transition-all text-gray-700 hover:text-emerald-800 disabled:opacity-50 hover:shadow-md"
+                className={`w-full text-left text-sm px-4 py-3 rounded-lg border transition-all disabled:opacity-50 hover:shadow-md ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:border-emerald-400 hover:text-emerald-300' : 'bg-gradient-to-r from-white to-emerald-50 hover:from-emerald-50 hover:to-lime-100 border-emerald-200 hover:border-emerald-400 text-gray-700 hover:text-emerald-800'}`}
               >
                 "{example}"
               </button>
@@ -186,8 +186,8 @@ const ControlPanel = ({ onSearch, loading }) => {
         </div>
 
         {/* Pro Tip */}
-        <div className="p-4 bg-gradient-to-r from-emerald-50 to-rose-50 rounded-xl border-2 border-emerald-200">
-          <p className="text-sm text-emerald-900">
+        <div className={`p-4 rounded-xl border-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-gradient-to-r from-emerald-100 to-lime-100 border-emerald-300'}`}>
+          <p className={`text-sm ${isDark ? 'text-emerald-200' : 'text-emerald-900'}`}>
             <span className="font-bold text-base">💡 Pro Tip:</span> Click anywhere on the map to get instant location-specific insights!
           </p>
         </div>
