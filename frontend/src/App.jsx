@@ -75,25 +75,32 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-emerald-50/60 text-slate-800">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg z-10">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold text-white flex items-center">
-             Geo Market Match <span className="ml-2 text-sm font-normal text-blue-100 bg-blue-800 bg-opacity-50 px-3 py-1 rounded-full">AI-Powered Location Intelligence</span>
-          </h1>
+      <header className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-rose-600 shadow-lg z-10 border-b border-white/20">
+        <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-2xl font-extrabold tracking-tight text-white flex items-center">
+               Geo Market Match <span className="ml-2 text-xs sm:text-sm font-medium text-emerald-50 bg-white/20 px-3 py-1 rounded-full">AI-Powered Location Intelligence</span>
+            </h1>
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
+              <div className="bg-white/20 text-white px-3 py-1 rounded-full">Results: {recommendations.length}</div>
+              {selectedCity && <div className="bg-white/20 text-white px-3 py-1 rounded-full">City: {selectedCity.city}</div>}
+              {selectedArea && <div className="bg-white/20 text-white px-3 py-1 rounded-full">Area: {selectedArea.area_name}</div>}
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow flex overflow-hidden">
+      <main className="flex-grow flex flex-col lg:flex-row overflow-hidden gap-4 p-3 sm:p-4">
         
         {/* Sidebar */}
-        <div className="w-96 flex-shrink-0 p-4 overflow-y-auto border-r bg-gray-50">
+        <div className="w-full lg:w-96 lg:flex-shrink-0 p-4 overflow-y-auto border border-emerald-100 bg-white/90 backdrop-blur rounded-2xl shadow-sm">
            <ControlPanel onSearch={handleSearch} loading={loading} />
            
            {error && (
-             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+             <div className="bg-rose-50 border border-rose-300 text-rose-700 px-4 py-3 rounded relative mb-4" role="alert">
                 <span className="block sm:inline">{error}</span>
              </div>
            )}
@@ -107,14 +114,14 @@ function App() {
                />
                
                {selectedCity && (
-                   <div className="mt-4 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow border border-blue-200">
-                       <h3 className="font-bold text-blue-900 border-b border-blue-300 pb-2 mb-2">
+                   <div className="mt-4 bg-gradient-to-br from-emerald-50 to-rose-50 p-4 rounded-xl shadow border border-emerald-200">
+                       <h3 className="font-bold text-emerald-900 border-b border-emerald-300 pb-2 mb-2">
                          Market Analysis: {selectedCity.city}
                        </h3>
                        <p className="text-sm text-gray-700">{selectedCity.reason}</p>
                        {selectedCity.areas && selectedCity.areas.length > 0 && (
-                         <div className="mt-2 pt-2 border-t border-blue-200">
-                           <p className="text-xs font-semibold text-indigo-700">
+                         <div className="mt-2 pt-2 border-t border-emerald-200">
+                           <p className="text-xs font-semibold text-rose-700">
                              {selectedCity.areas.length} strategic areas identified
                            </p>
                          </div>
@@ -134,7 +141,7 @@ function App() {
         </div>
 
         {/* Map Area */}
-        <div className="flex-grow relative">
+          <div className="flex-grow relative rounded-2xl overflow-hidden border border-emerald-100 shadow-sm min-h-[320px] lg:min-h-0">
            <MapComponent 
               data={recommendations} 
               selectedCity={selectedCity} 
@@ -145,26 +152,26 @@ function App() {
            
            {/* Welcome Guide - Shows when no search has been made */}
            {showWelcome && recommendations.length === 0 && !loading && (
-               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 z-[999]">
-                   <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border-4 border-indigo-500 relative">
+                 <div className="absolute inset-0 flex items-center justify-center bg-emerald-950/10 z-[999]">
+                   <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border-4 border-emerald-500 relative">
                        {/* Close Button */}
                        <button 
                            onClick={() => setShowWelcome(false)}
-                           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors"
                            title="Close welcome screen"
                        >
                            ×
                        </button>
                        
                        <div className="text-center">
-                           <div className="text-5xl mb-4 font-bold text-indigo-600">GEO MARKET MATCH</div>
+                           <div className="text-5xl mb-4 font-bold text-emerald-600">GEO MARKET MATCH</div>
                            <h2 className="text-2xl font-semibold text-gray-700 mb-3">AI-Powered Location Intelligence</h2>
                            <p className="text-gray-600 mb-6 text-lg">AI-powered business location intelligence</p>
                            
                            <div className="grid md:grid-cols-2 gap-4 mb-6 text-left">
-                               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border-2 border-blue-200">
-                                   <div className="text-2xl mb-2 font-bold text-indigo-600">1</div>
-                                   <h3 className="font-bold text-indigo-900 mb-2">Search with AI</h3>
+                                 <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-xl border-2 border-emerald-200">
+                                   <div className="text-2xl mb-2 font-bold text-emerald-600">1</div>
+                                   <h3 className="font-bold text-emerald-900 mb-2">Search with AI</h3>
                                    <p className="text-sm text-gray-700">Ask questions like:</p>
                                    <ul className="text-xs text-gray-600 mt-2 space-y-1">
                                        <li>• "Best areas for cafe in Islamabad"</li>
@@ -173,9 +180,9 @@ function App() {
                                    </ul>
                                </div>
                                
-                               <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-200">
-                                   <div className="text-2xl mb-2 font-bold text-green-600">2</div>
-                                   <h3 className="font-bold text-green-900 mb-2">Click on Map</h3>
+                                 <div className="bg-gradient-to-br from-rose-50 to-red-50 p-5 rounded-xl border-2 border-rose-200">
+                                   <div className="text-2xl mb-2 font-bold text-rose-600">2</div>
+                                   <h3 className="font-bold text-rose-900 mb-2">Click on Map</h3>
                                    <p className="text-sm text-gray-700">Explore any location:</p>
                                    <ul className="text-xs text-gray-600 mt-2 space-y-1">
                                        <li>• Click anywhere on the map</li>
@@ -185,13 +192,13 @@ function App() {
                                </div>
                            </div>
                            
-                           <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
-                               <p className="text-sm text-yellow-800 font-medium"><span className="font-bold">Tip:</span> Search first to set your business type, then click the map for location-specific insights</p>
+                             <div className="bg-emerald-50 border-2 border-emerald-200 rounded-lg p-4 mb-4">
+                               <p className="text-sm text-emerald-800 font-medium"><span className="font-bold">Tip:</span> Search first to set your business type, then click the map for location-specific insights</p>
                            </div>
                            
                            <button 
                                onClick={() => setShowWelcome(false)}
-                               className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
+                                 className="bg-gradient-to-r from-emerald-600 to-rose-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-rose-700 transition-all shadow-lg"
                            >
                                Got it! Start Exploring →
                            </button>
@@ -200,9 +207,9 @@ function App() {
                </div>
            )}
            {loading && (
-               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-[1000]">
+                 <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-[1000]">
                    <div className="text-center">
-                       <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                     <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
                        <p className="text-gray-600 font-medium">AI is analyzing your query...</p>
                    </div>
                </div>
