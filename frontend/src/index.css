@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,16 +7,39 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #ecfdf5 0%, #f8fafc 55%, #fff1f2 100%);
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  color: #0f172a;
 }
 
 #root {
   height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ecfdf5;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #34d399, #f43f5e);
+  border-radius: 9999px;
+}
+
+* {
+  scrollbar-color: #34d399 #ecfdf5;
+  scrollbar-width: thin;
 }
 
 @keyframes slideIn {

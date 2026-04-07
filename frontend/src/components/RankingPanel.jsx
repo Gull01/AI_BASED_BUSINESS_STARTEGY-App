@@ -30,9 +30,9 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
         label: 'Suitability Score',
         data: sortedData.map(d => d.score),
         backgroundColor: sortedData.map(d => 
-            selectedCity?.city === d.city ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 0.4)'
+            selectedCity?.city === d.city ? 'rgba(225, 29, 72, 0.75)' : 'rgba(16, 185, 129, 0.6)'
         ),
-        borderColor: 'rgba(59, 130, 246, 1)',
+        borderColor: 'rgba(5, 150, 105, 1)',
         borderWidth: 1,
       },
     ],
@@ -49,6 +49,7 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
       title: {
         display: true,
         text: 'Top Cities Ranking',
+        color: '#065f46',
       },
     },
     onClick: (event, elements) => {
@@ -66,7 +67,7 @@ const RankingPanel = ({ data, selectedCity, onCitySelect }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md h-96 flex flex-col">
+    <div className="bg-white p-4 rounded-xl shadow-md border border-emerald-100 h-96 flex flex-col">
        <div className="flex-grow">
          <Bar data={chartData} options={options} />
        </div>

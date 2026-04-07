@@ -42,32 +42,32 @@ const ControlPanel = ({ onSearch, loading }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+    <div className="bg-gradient-to-br from-white to-emerald-50/40 rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-emerald-700 to-rose-600 p-6 text-white">
         <h2 className="text-2xl font-bold mb-2">
           AI Business Intelligence
         </h2>
-        <p className="text-sm text-indigo-100 mb-4">
+        <p className="text-sm text-emerald-50 mb-4">
           Get data-driven insights for any location and business type worldwide
         </p>
         
         {/* How to Use Guide */}
-        <div className="bg-white bg-opacity-20 rounded-lg p-3 mt-3 backdrop-blur-sm">
+        <div className="bg-white/20 rounded-lg p-3 mt-3 backdrop-blur-sm">
           <div className="text-xs font-semibold mb-2 text-white">
             How to Use:
           </div>
-          <div className="space-y-1.5 text-xs text-indigo-50">
+          <div className="space-y-1.5 text-xs text-emerald-50">
             <div className="flex items-start gap-2">
-              <span className="bg-white text-indigo-600 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+              <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
               <span>Type your question below (e.g., "Best areas for cafe in Islamabad")</span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="bg-white text-indigo-600 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+              <span className="bg-white text-emerald-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
               <span>View recommended cities and neighborhoods on the map</span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="bg-white text-indigo-600 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
+              <span className="bg-white text-rose-700 rounded-full w-5 h-5 flex items-center justify-center font-bold text-xs flex-shrink-0">3</span>
               <span>Click any map location for detailed local insights</span>
             </div>
           </div>
@@ -76,12 +76,12 @@ const ControlPanel = ({ onSearch, loading }) => {
 
       <div className="p-6 space-y-6">
         {/* Query Type Selection */}
-        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+        <div className="flex gap-2 p-1 bg-emerald-50 rounded-lg border border-emerald-100">
           <button
             onClick={() => setQueryType('business')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${ 
               queryType === 'business'
-                ? 'bg-white text-indigo-600 shadow-md'
+                ? 'bg-white text-emerald-700 shadow-sm border border-emerald-200'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -91,7 +91,7 @@ const ControlPanel = ({ onSearch, loading }) => {
             onClick={() => setQueryType('general')}
             className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
               queryType === 'general'
-                ? 'bg-white text-indigo-600 shadow-md'
+                ? 'bg-white text-rose-700 shadow-sm border border-rose-200'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -109,7 +109,7 @@ const ControlPanel = ({ onSearch, loading }) => {
               <select
                 value={businessType}
                 onChange={(e) => setBusinessType(e.target.value)}
-                className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-white"
+                className="w-full px-4 py-3 text-base border-2 border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-white"
               >
                 <option value="">Select a business type...</option>
                 {businessCategories.map((category) => (
@@ -135,7 +135,7 @@ const ControlPanel = ({ onSearch, loading }) => {
                   : "e.g., Tell me about business opportunities in New York..."
               }
               rows={4}
-              className="w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all"
+              className="w-full px-4 py-3 text-base border-2 border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none transition-all"
             />
           </div>
 
@@ -146,7 +146,7 @@ const ControlPanel = ({ onSearch, loading }) => {
             className={`w-full flex justify-center items-center gap-2 py-4 px-6 rounded-xl shadow-lg text-base font-semibold text-white transition-all transform ${
               loading || !query.trim()
                 ? 'bg-gray-300 cursor-not-allowed'
-                : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
+                : 'bg-gradient-to-r from-emerald-600 to-rose-600 hover:from-emerald-700 hover:to-rose-700 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
             }`}
           >
             {loading ? (
@@ -177,7 +177,7 @@ const ControlPanel = ({ onSearch, loading }) => {
                 key={idx}
                 onClick={() => handleExampleClick(example)}
                 disabled={loading}
-                className="w-full text-left text-sm px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-indigo-50 hover:to-purple-50 rounded-lg border border-gray-200 hover:border-indigo-300 transition-all text-gray-700 hover:text-indigo-700 disabled:opacity-50 hover:shadow-md"
+                className="w-full text-left text-sm px-4 py-3 bg-gradient-to-r from-gray-50 to-emerald-50/40 hover:from-emerald-50 hover:to-rose-50 rounded-lg border border-emerald-100 hover:border-rose-200 transition-all text-gray-700 hover:text-emerald-800 disabled:opacity-50 hover:shadow-md"
               >
                 "{example}"
               </button>
@@ -186,8 +186,8 @@ const ControlPanel = ({ onSearch, loading }) => {
         </div>
 
         {/* Pro Tip */}
-        <div className="p-4 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl border-2 border-indigo-200">
-          <p className="text-sm text-indigo-900">
+        <div className="p-4 bg-gradient-to-r from-emerald-50 to-rose-50 rounded-xl border-2 border-emerald-200">
+          <p className="text-sm text-emerald-900">
             <span className="font-bold text-base">💡 Pro Tip:</span> Click anywhere on the map to get instant location-specific insights!
           </p>
         </div>

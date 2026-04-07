@@ -41,9 +41,9 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
         label: 'Area Suitability Score',
         data: sortedAreas.map(d => d.score),
         backgroundColor: sortedAreas.map(d => 
-            selectedArea?.area_name === d.area_name ? 'rgba(99, 102, 241, 0.8)' : 'rgba(99, 102, 241, 0.4)'
+            selectedArea?.area_name === d.area_name ? 'rgba(225, 29, 72, 0.75)' : 'rgba(16, 185, 129, 0.6)'
         ),
-        borderColor: 'rgba(99, 102, 241, 1)',
+        borderColor: 'rgba(5, 150, 105, 1)',
         borderWidth: 1,
       },
     ],
@@ -60,6 +60,7 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
       title: {
         display: true,
         text: `Best Areas in ${city.city}`,
+        color: '#065f46',
         font: {
           size: 14,
           weight: 'bold'
@@ -81,27 +82,27 @@ const AreaInsightsPanel = ({ city, selectedArea, onAreaSelect }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mt-4">
+    <div className="bg-white p-4 rounded-xl shadow-md border border-emerald-100 mt-4">
        <div className="h-64 mb-4">
          <Bar data={chartData} options={options} />
        </div>
        
        {/* Area Details List */}
        <div className="space-y-2 max-h-48 overflow-y-auto">
-         <h4 className="font-semibold text-sm text-gray-700 mb-2">Neighborhood Insights</h4>
+         <h4 className="font-semibold text-sm text-emerald-900 mb-2">Neighborhood Insights</h4>
          {sortedAreas.map((area, idx) => (
            <div 
              key={idx}
              onClick={() => onAreaSelect(area)}
              className={`p-2 rounded border cursor-pointer transition-all ${
                selectedArea?.area_name === area.area_name 
-                 ? 'border-indigo-500 bg-indigo-50' 
-                 : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                 ? 'border-rose-300 bg-rose-50' 
+                 : 'border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50/40'
              }`}
            >
              <div className="flex justify-between items-center mb-1">
                <span className="font-medium text-sm">📍 {area.area_name}</span>
-               <span className="text-xs font-semibold text-indigo-600">
+               <span className="text-xs font-semibold text-emerald-700">
                  {(area.score * 100).toFixed(0)}/100
                </span>
              </div>

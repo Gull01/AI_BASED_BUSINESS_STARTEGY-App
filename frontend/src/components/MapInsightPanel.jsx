@@ -4,23 +4,21 @@ const MapInsightPanel = ({ insight, onClose }) => {
   if (!insight) return null;
 
   const getScoreColor = (score) => {
-    if (score >= 0.8) return 'text-green-600 bg-green-100';
-    if (score >= 0.6) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (score >= 0.7) return 'text-emerald-700 bg-emerald-100';
+    return 'text-rose-700 bg-rose-100';
   };
 
   const getScoreBgColor = (score) => {
-    if (score >= 0.8) return 'bg-green-500';
-    if (score >= 0.6) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (score >= 0.7) return 'bg-emerald-500';
+    return 'bg-rose-500';
   };
 
   return (
-    <div className="fixed bottom-6 right-6 w-[450px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-[1001] animate-slideIn overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 flex justify-between items-center">
+    <div className="fixed bottom-6 right-6 w-[450px] bg-white rounded-2xl shadow-2xl border border-emerald-100 z-[1001] animate-slideIn overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-700 to-rose-600 text-white p-5 flex justify-between items-center">
         <div>
           <h3 className="font-bold text-lg">{insight.location_name}</h3>
-          <p className="text-xs text-indigo-100">Location Insights</p>
+          <p className="text-xs text-emerald-50">Location Insights</p>
         </div>
         <button 
           onClick={onClose}
@@ -34,7 +32,7 @@ const MapInsightPanel = ({ insight, onClose }) => {
       
       <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
         {/* Score Display */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border-2 border-indigo-200">
+        <div className="bg-gradient-to-br from-emerald-50 to-rose-50 rounded-xl p-4 border-2 border-emerald-200">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-bold text-gray-700">Suitability Score</span>
             <div className={`px-4 py-2 rounded-full font-bold text-lg ${getScoreColor(insight.recommendation_score)}`}>
@@ -50,8 +48,8 @@ const MapInsightPanel = ({ insight, onClose }) => {
         </div>
 
         {/* Insights */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-4 rounded-lg">
-          <h4 className="font-bold text-sm text-blue-900 mb-2 flex items-center gap-2">
+        <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-lg">
+          <h4 className="font-bold text-sm text-emerald-900 mb-2 flex items-center gap-2">
             <span>💡</span> Key Insights
           </h4>
           <p className="text-sm text-gray-800 leading-relaxed">{insight.insights}</p>
@@ -67,9 +65,9 @@ const MapInsightPanel = ({ insight, onClose }) => {
               </div>
             )}
             {insight.estimated_startup_cost && (
-              <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
-                <p className="text-xs text-blue-700 font-semibold mb-1">Est. Startup Cost</p>
-                <p className="text-sm font-bold text-blue-900">{insight.estimated_startup_cost}</p>
+              <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-4">
+                <p className="text-xs text-rose-700 font-semibold mb-1">Est. Startup Cost</p>
+                <p className="text-sm font-bold text-rose-900">{insight.estimated_startup_cost}</p>
               </div>
             )}
           </div>
@@ -77,8 +75,8 @@ const MapInsightPanel = ({ insight, onClose }) => {
 
         {/* Target Customers */}
         {insight.target_customers && (
-          <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
-            <h4 className="font-bold text-sm text-purple-900 mb-2">
+          <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
+            <h4 className="font-bold text-sm text-emerald-900 mb-2">
               Target Customers
             </h4>
             <p className="text-sm text-gray-800">{insight.target_customers}</p>
@@ -104,14 +102,14 @@ const MapInsightPanel = ({ insight, onClose }) => {
 
         {/* Challenges */}
         {insight.challenges && insight.challenges.length > 0 && (
-          <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
-            <h4 className="font-bold text-sm text-orange-900 mb-3 flex items-center gap-2">
+          <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-4">
+            <h4 className="font-bold text-sm text-rose-900 mb-3 flex items-center gap-2">
               <span>⚠️</span> Challenges
             </h4>
             <ul className="space-y-2">
               {insight.challenges.map((chal, idx) => (
                 <li key={idx} className="text-sm text-gray-800 flex items-start gap-2">
-                  <span className="text-orange-600 font-bold mt-0.5">→</span>
+                  <span className="text-rose-600 font-bold mt-0.5">→</span>
                   <span>{chal}</span>
                 </li>
               ))}

@@ -43,14 +43,14 @@ const LocationQueryModal = ({ isOpen, onClose, onSelect, location }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-emerald-950/40 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-emerald-700 to-rose-600 p-6 text-white">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-2xl font-bold mb-2">📍 Location Selected</h3>
-              <p className="text-indigo-100 text-sm">
+              <p className="text-emerald-50 text-sm">
                 {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : 'Unknown'}
               </p>
             </div>
@@ -76,14 +76,14 @@ const LocationQueryModal = ({ isOpen, onClose, onSelect, location }) => {
               <button
                 key={option.id}
                 onClick={() => handleSelect(option.id)}
-                className="group relative p-6 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:shadow-lg transition-all duration-200 text-left hover:scale-105 active:scale-95"
+                className="group relative p-6 bg-gradient-to-br from-gray-50 to-emerald-50/40 border-2 border-emerald-100 rounded-xl hover:border-rose-300 hover:shadow-lg transition-all duration-200 text-left hover:scale-105 active:scale-95"
               >
                 <div className="flex items-start gap-4">
                   <div className="text-4xl group-hover:scale-110 transition-transform">
                     {option.icon}
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                    <h4 className="font-bold text-gray-900 mb-1 group-hover:text-emerald-700 transition-colors">
                       {option.title}
                     </h4>
                     <p className="text-sm text-gray-600">
@@ -92,7 +92,7 @@ const LocationQueryModal = ({ isOpen, onClose, onSelect, location }) => {
                   </div>
                 </div>
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -100,8 +100,8 @@ const LocationQueryModal = ({ isOpen, onClose, onSelect, location }) => {
             ))}
           </div>
 
-          <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-            <p className="text-sm text-indigo-900 text-center">
+          <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+            <p className="text-sm text-emerald-900 text-center">
               <span className="font-semibold">💡 Tip:</span> Select an option to get AI-powered insights for this exact location
             </p>
           </div>

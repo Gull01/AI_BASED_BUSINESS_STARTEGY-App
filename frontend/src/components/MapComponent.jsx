@@ -106,14 +106,12 @@ const MapClickHandler = ({ onMapClick }) => {
 
 const MapComponent = ({ data, selectedCity, onCitySelect, selectedArea, onMapClick }) => {
   const getColor = (score) => {
-    if (score >= 0.9) return '#10B981'; // Green
-    if (score >= 0.8) return '#FBBF24'; // Yellow
+    if (score >= 0.75) return '#10B981'; // Green
     return '#EF4444'; // Red
   };
 
   const getAreaColor = (score) => {
-    if (score >= 0.9) return '#059669'; // Darker Green
-    if (score >= 0.8) return '#F59E0B'; // Darker Yellow
+    if (score >= 0.75) return '#059669'; // Darker Green
     return '#DC2626'; // Darker Red
   };
 
