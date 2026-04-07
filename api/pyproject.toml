@@ -1,0 +1,9 @@
+[project]
+name = "geo-market-match-api"
+version = "0.1.0"
+description = "Vercel Python API handlers"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false
