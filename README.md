@@ -1,17 +1,17 @@
-# 🤖 AI-Based Business Strategy App
+# AI-Based Business Strategy App
 
-## 🚀 Overview
+## Overview
 AI-powered business location intelligence tool
 
-## ✨ Key Features
+## Key Features
 - **Location Intelligence**: Employs spatial models to find optimal business locations.
 - **Decision Support**: Empowers stakeholders with actionable predictive analytics.
 - **AI Processing**: Integrates AI algorithms to analyze and rank potential zones.
 
-## 🛠️ Built With
+## Built With
 - **Tech Stack:** Python, Machine Learning, GIS
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 Ensure your local environment is configured securely (e.g. Python 3.8+ or necessary GIS software context).
@@ -27,7 +27,7 @@ Ensure your local environment is configured securely (e.g. Python 3.8+ or necess
    ```
 3. Set up your environment and dependencies as needed.
 
-## 📄 License
+## License
 This project is licensed under the MIT License - see below for details.
 
 ```text
