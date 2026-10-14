@@ -2,6 +2,7 @@
 
 ## Overview
 AI-powered business location intelligence tool
+Live link:-based-business-startegy-app.vercel.app
 
 ## Key Features
 - **Location Intelligence**: Employs spatial models to find optimal business locations.
