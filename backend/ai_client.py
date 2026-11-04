@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import urllib.request
 import urllib.error
 from dotenv import load_dotenv
@@ -32,14 +33,23 @@ class GeminiModel:
     def generate_content(self, prompt):
         url = GEMINI_URL.format(model=self.model_name) + "?key=" + urllib.request.quote(API_KEY or "", safe="")
         body = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
-        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=90) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.HTTPError as e:
-            detail = e.read().decode("utf-8", errors="replace")[:500]
-            print(f"AI Error: HTTP {e.code} {detail}")
-            raise Exception(f"Gemini API error {e.code}")
+        data = None
+        for attempt in range(4):
+            req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+            try:
+                with urllib.request.urlopen(req, timeout=90) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as e:
+                detail = e.read().decode("utf-8", errors="replace")[:500]
+                # 429 (rate limit) and 5xx (overloaded) are usually temporary: wait and retry
+                if e.code in (429, 500, 502, 503, 504) and attempt < 3:
+                    wait = 2 ** (attempt + 1)
+                    print(f"AI busy (HTTP {e.code}), retrying in {wait}s")
+                    time.sleep(wait)
+                    continue
+                print(f"AI Error: HTTP {e.code} {detail}")
+                raise Exception(f"Gemini API error {e.code}")
         try:
             parts = data["candidates"][0]["content"]["parts"]
             return _GeminiResponse("".join(p.get("text", "") for p in parts))
