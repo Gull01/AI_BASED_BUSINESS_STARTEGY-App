@@ -8,6 +8,8 @@ from schemas import CityRecommendation, LocationInsight
 load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
+# Model can be changed without editing code by setting GEMINI_MODEL
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
@@ -119,7 +121,7 @@ def get_location_insights(latitude: float, longitude: float, business_type: str)
     CRITICAL: Analyze THIS EXACT GPS LOCATION, not the entire city. Be hyper-specific about THIS spot.
     """
     
-    model = GeminiModel('gemini-2.5-flash')
+    model = GeminiModel(MODEL_NAME)
     
     try:
         response = model.generate_content(prompt)
@@ -279,7 +281,7 @@ def get_recommendations_from_ai(user_query: str):
     - Coordinates are accurate for each location
     """
 
-    model = GeminiModel('gemini-2.5-flash')
+    model = GeminiModel(MODEL_NAME)
 
     try:
         response = model.generate_content(prompt)
