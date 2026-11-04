@@ -1,56 +1,87 @@
-# AI-Based Business Strategy App
+# Geo Market Match
 
-## Overview
-AI-powered business location intelligence tool
-Live link:https://ai-based-business-startegy-app.vercel.app/
+**AI-assisted business location intelligence on an interactive map.**
 
-## Key Features
-- **Location Intelligence**: Employs spatial models to find optimal business locations.
-- **Decision Support**: Empowers stakeholders with actionable predictive analytics.
-- **AI Processing**: Integrates AI algorithms to analyze and rank potential zones.
+Live demo: https://ai-based-business-startegy-app.vercel.app/
 
-## Built With
-- **Tech Stack:** Python, Machine Learning, GIS
+Geo Market Match helps someone answer a simple question: *where should I open this business?* You describe what you want in plain language ("a specialty coffee shop in the Gulf", "a gym in Islamabad"), and the app returns candidate cities and neighbourhoods on a map, each with a suitability score and a short explanation. You can also click anywhere on the map to get a street-level read of that exact spot for a chosen business type.
 
-## Getting Started
+## How it works
 
-### Prerequisites
-Ensure your local environment is configured securely (e.g. Python 3.8+ or necessary GIS software context).
+1. **Natural language query.** The frontend sends your query to a small Python API.
+2. **LLM reasoning with structured output.** The API prompts Google Gemini to extract the location and business intent from the query, then rank candidate cities and areas. The model is told to return strict JSON, which is validated against Pydantic schemas (`CityRecommendation`, `AreaInsight`, `LocationInsight`) before anything reaches the map.
+3. **Map click analysis.** Clicking the map sends the coordinates and business type to a second endpoint. Gemini identifies the neighbourhood from the coordinates and returns opportunities, challenges, a 0.5 to 0.95 suitability score, estimated startup cost, revenue range and a target customer profile.
+4. **Fallback mode.** If no API key is set, the backend returns built-in sample data so the interface still works for demos.
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Gull01/AI_BASED_BUSINESS_STARTEGY-App.git
-   ```
-2. Navigate into the project folder:
-   ```bash
-   cd AI_BASED_BUSINESS_STARTEGY-App
-   ```
-3. Set up your environment and dependencies as needed.
+```mermaid
+flowchart LR
+  U[User query or map click] --> F[React + Leaflet frontend]
+  F -->|POST /recommend<br/>POST /map-insight| B[Python API]
+  B --> G[Google Gemini]
+  G -->|JSON| B
+  B -->|Pydantic validation| F
+  F --> M[Ranked cities, areas and insights on the map]
+```
 
-## License
-This project is licensed under the MIT License - see below for details.
+## Features
+
+- Free text search for business location ideas, worldwide
+- Ranked cities with drill down into specific areas, all plotted on the map
+- Click anywhere for a location insight panel (opportunities, challenges, score, cost and revenue estimates)
+- Dark and light mode, collapsible side panel, help panel
+
+## Tech stack
+
+| Part | Technology |
+|---|---|
+| Frontend | React (Vite), React Leaflet, Tailwind CSS, Axios |
+| Backend | Python: FastAPI (`backend/main.py`), with a Flask version (`backend/flask_app.py`) used for hosting |
+| AI | Google Gemini (`google-generativeai`), JSON output validated with Pydantic |
+| Hosting | Frontend on Vercel, API on PythonAnywhere |
+
+## Run it locally
+
+You need Python 3.10+ and Node.js 18+, plus a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+**Backend**
+
+```bash
+git clone https://github.com/Gull01/AI_BASED_BUSINESS_STARTEGY-App.git
+cd AI_BASED_BUSINESS_STARTEGY-App/backend
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env             # then put your key in GOOGLE_API_KEY
+uvicorn main:app --reload --port 8000
+```
+
+**Frontend**
+
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+The frontend points to the hosted API in `frontend/src/api.js`. To use your local backend, change `API_URL` there to `http://localhost:8000`.
+
+## Project structure
 
 ```text
-MIT License
-
-Copyright (c) 2026 Gul Nawaz
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+frontend/     React app (map, control panel, ranking and insight panels)
+backend/      FastAPI and Flask versions of the API, Gemini client, schemas, tests
+api/          Lightweight serverless version of the API
+vercel.json   Frontend build and deploy config
 ```
+
+## Limitations
+
+This is a decision support prototype, not a market study. Scores, rents, foot traffic and revenue figures are **estimates generated by the language model**, not values computed from real spatial datasets, so treat them as a starting point for research rather than as facts. A natural next step is to ground the model in real data (OpenStreetMap points of interest, population grids, competitor counts) through tool calls, so its answers are backed by measured inputs.
+
+## Author
+
+Gul Nawaz, GIS specialist and GeoAI researcher. [gulnawaz.dev](https://gulnawaz.dev)
+
+## License
+
+MIT
