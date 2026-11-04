@@ -1,7 +1,8 @@
+import os
 import requests
 
 USERNAME = "gull001"
-API_TOKEN = "REMOVED_SECRET"
+API_TOKEN = os.environ["PYTHONANYWHERE_API_TOKEN"]
 BASE_URL = f"https://www.pythonanywhere.com/api/v0/user/{USERNAME}"
 headers = {"Authorization": f"Token {API_TOKEN}"}
 
