@@ -10,9 +10,19 @@ load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
 # Model can be changed without editing code by setting GEMINI_MODEL
-MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
+# Tried in order when the main model stays busy (comma separated)
+FALLBACK_MODELS = [m.strip() for m in os.getenv(
+    "GEMINI_FALLBACK_MODELS", "gemini-3.5-flash-lite,gemini-flash-lite-latest,gemini-3.8-flash"
+).split(",") if m.strip()]
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+
+class _Busy(Exception):
+    def __init__(self, code):
+        super().__init__(f"HTTP {code}")
+        self.code = code
 
 
 class _GeminiResponse:
@@ -31,10 +41,21 @@ class GeminiModel:
         self.model_name = model_name
 
     def generate_content(self, prompt):
-        url = GEMINI_URL.format(model=self.model_name) + "?key=" + urllib.request.quote(API_KEY or "", safe="")
+        models = [self.model_name] + [m for m in FALLBACK_MODELS if m != self.model_name]
+        last_error = None
+        for model in models:
+            try:
+                return self._generate_with(model, prompt)
+            except _Busy as e:
+                last_error = e
+                print(f"AI model {model} busy, trying next model")
+        raise Exception(f"Gemini API error {last_error.code} on all models")
+
+    def _generate_with(self, model_name, prompt):
+        url = GEMINI_URL.format(model=model_name) + "?key=" + urllib.request.quote(API_KEY or "", safe="")
         body = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
         data = None
-        for attempt in range(4):
+        for attempt in range(3):
             req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
             try:
                 with urllib.request.urlopen(req, timeout=90) as resp:
@@ -43,12 +64,15 @@ class GeminiModel:
             except urllib.error.HTTPError as e:
                 detail = e.read().decode("utf-8", errors="replace")[:500]
                 # 429 (rate limit) and 5xx (overloaded) are usually temporary: wait and retry
-                if e.code in (429, 500, 502, 503, 504) and attempt < 3:
+                busy = e.code in (429, 500, 502, 503, 504)
+                if busy and attempt < 2:
                     wait = 2 ** (attempt + 1)
-                    print(f"AI busy (HTTP {e.code}), retrying in {wait}s")
+                    print(f"AI busy ({model_name}, HTTP {e.code}), retrying in {wait}s")
                     time.sleep(wait)
                     continue
-                print(f"AI Error: HTTP {e.code} {detail}")
+                print(f"AI Error ({model_name}): HTTP {e.code} {detail}")
+                if busy or e.code == 404:
+                    raise _Busy(e.code)
                 raise Exception(f"Gemini API error {e.code}")
         try:
             parts = data["candidates"][0]["content"]["parts"]
