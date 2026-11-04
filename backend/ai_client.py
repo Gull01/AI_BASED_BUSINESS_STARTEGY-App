@@ -1,14 +1,49 @@
 import os
 import json
-import google.generativeai as genai
+import urllib.request
+import urllib.error
 from dotenv import load_dotenv
 from schemas import CityRecommendation, LocationInsight
 
 load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+
+class _GeminiResponse:
+    def __init__(self, text):
+        self.text = text
+
+
+class GeminiModel:
+    """Minimal Gemini client over the REST API.
+
+    Replaces the deprecated google.generativeai package. It sends the key as a
+    query parameter, which works with both classic (AIza) and newer key formats.
+    """
+
+    def __init__(self, model_name):
+        self.model_name = model_name
+
+    def generate_content(self, prompt):
+        url = GEMINI_URL.format(model=self.model_name) + "?key=" + urllib.request.quote(API_KEY or "", safe="")
+        body = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", errors="replace")[:500]
+            print(f"AI Error: HTTP {e.code} {detail}")
+            raise Exception(f"Gemini API error {e.code}")
+        try:
+            parts = data["candidates"][0]["content"]["parts"]
+            return _GeminiResponse("".join(p.get("text", "") for p in parts))
+        except (KeyError, IndexError):
+            print(f"AI Error: unexpected response {str(data)[:500]}")
+            raise Exception("Gemini returned no text")
 
 def get_location_insights(latitude: float, longitude: float, business_type: str):
     """Get AI insights for a clicked location on the map"""
@@ -84,7 +119,7 @@ def get_location_insights(latitude: float, longitude: float, business_type: str)
     CRITICAL: Analyze THIS EXACT GPS LOCATION, not the entire city. Be hyper-specific about THIS spot.
     """
     
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    model = GeminiModel('gemini-2.5-flash')
     
     try:
         response = model.generate_content(prompt)
@@ -244,7 +279,7 @@ def get_recommendations_from_ai(user_query: str):
     - Coordinates are accurate for each location
     """
 
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    model = GeminiModel('gemini-2.5-flash')
 
     try:
         response = model.generate_content(prompt)
