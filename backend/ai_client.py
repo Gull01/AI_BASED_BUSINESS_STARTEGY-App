@@ -19,6 +19,9 @@ FALLBACK_MODELS = [m.strip() for m in os.getenv(
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
+_last_good_model = None
+
+
 class _Busy(Exception):
     def __init__(self, code):
         super().__init__(f"HTTP {code}")
@@ -41,39 +44,49 @@ class GeminiModel:
         self.model_name = model_name
 
     def generate_content(self, prompt):
+        global _last_good_model
         models = [self.model_name] + [m for m in FALLBACK_MODELS if m != self.model_name]
+        # Start with whichever model answered last time, so we skip known-busy ones
+        if _last_good_model in models:
+            models.remove(_last_good_model)
+            models.insert(0, _last_good_model)
         last_error = None
-        for model in models:
-            try:
-                return self._generate_with(model, prompt)
-            except _Busy as e:
-                last_error = e
-                print(f"AI model {model} busy, trying next model")
+        # Round 1 switches models immediately; round 2 waits briefly and tries again
+        for round_no in range(2):
+            if round_no == 1:
+                time.sleep(3)
+            for model in models:
+                try:
+                    result = self._generate_with(model, prompt)
+                    _last_good_model = model
+                    return result
+                except _Busy as e:
+                    last_error = e
+                    print(f"AI model {model} busy (HTTP {e.code}), trying next model")
         raise Exception(f"Gemini API error {last_error.code} on all models")
 
     def _generate_with(self, model_name, prompt):
         url = GEMINI_URL.format(model=model_name) + "?key=" + urllib.request.quote(API_KEY or "", safe="")
-        body = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
-        data = None
-        for attempt in range(3):
-            req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
-            try:
-                with urllib.request.urlopen(req, timeout=90) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
-                break
-            except urllib.error.HTTPError as e:
-                detail = e.read().decode("utf-8", errors="replace")[:500]
-                # 429 (rate limit) and 5xx (overloaded) are usually temporary: wait and retry
-                busy = e.code in (429, 500, 502, 503, 504)
-                if busy and attempt < 2:
-                    wait = 2 ** (attempt + 1)
-                    print(f"AI busy ({model_name}, HTTP {e.code}), retrying in {wait}s")
-                    time.sleep(wait)
-                    continue
-                print(f"AI Error ({model_name}): HTTP {e.code} {detail}")
-                if busy or e.code == 404:
-                    raise _Busy(e.code)
-                raise Exception(f"Gemini API error {e.code}")
+        body = json.dumps({
+            "contents": [{"parts": [{"text": prompt}]}],
+            # Ask for raw JSON: no markdown fences to strip, fewer parse retries
+            "generationConfig": {"responseMimeType": "application/json"},
+        }).encode("utf-8")
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+        started = time.time()
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", errors="replace")[:500]
+            if e.code in (429, 500, 502, 503, 504, 404):
+                raise _Busy(e.code)
+            print(f"AI Error ({model_name}): HTTP {e.code} {detail}")
+            raise Exception(f"Gemini API error {e.code}")
+        except (urllib.error.URLError, TimeoutError) as e:
+            print(f"AI model {model_name} timed out or unreachable: {e}")
+            raise _Busy(504)
+        print(f"AI answered with {model_name} in {time.time() - started:.1f}s")
         try:
             parts = data["candidates"][0]["content"]["parts"]
             return _GeminiResponse("".join(p.get("text", "") for p in parts))
